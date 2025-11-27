@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { FileText, Map, Settings, MessageSquare, Plus, Trash2, Hotel, Flag, Bus, Plane, Train, MapPin, Copy, Eye, CheckCircle, Calendar, Bed, X, Edit, Users, ArrowRightLeft, RefreshCw, Printer, GripVertical, PackagePlus, Sparkles, Utensils, ArrowLeft } from 'lucide-react';
+import { FileText, Map, Settings, MessageSquare, Plus, Trash2, Hotel, Flag, Bus, Plane, Train, MapPin, Copy, Eye, CheckCircle, Calendar, Bed, X, Edit, Users, ArrowRightLeft, RefreshCw, Printer, GripVertical, PackagePlus, Sparkles, Utensils, ArrowLeft, Download, FileText as FileTextIcon } from 'lucide-react';
 import { Quotation, QuotationItineraryDay, TourExtension, CostSheet, TravelPackage, CityContent } from '../types';
 import CostingSheet from './CostingSheet';
 import ProposalTemplates from './ProposalTemplates';
@@ -107,6 +108,7 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({ embedded = false, i
 
   const sortableListRef = useRef<HTMLDivElement>(null);
   const sortableInstance = useRef<Sortable | null>(null);
+  const proposalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if(initialData) {
@@ -323,6 +325,29 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({ embedded = false, i
      setTimeout(() => setSaveSuccess(true), 500); 
   };
 
+  // Handler for Word Download
+  const handleDownloadWord = () => {
+    if (!proposalRef.current) return;
+    
+    const content = proposalRef.current.innerHTML;
+    // Add essential styles for Word document structure
+    const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title><style>body { font-family: 'Times New Roman', serif; }</style></head><body>";
+    const footer = "</body></html>";
+    const sourceHTML = header + content + footer;
+    
+    const blob = new Blob(['\ufeff', sourceHTML], {
+        type: 'application/msword'
+    });
+    
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Proposal_${quotation.quoteCode}.doc`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className={`h-full flex flex-col bg-slate-50 overflow-y-auto no-print ${embedded ? '' : 'p-8'}`}>
       
@@ -501,17 +526,29 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({ embedded = false, i
       
       {/* Preview Modal */}
       {showPreviewModal && (
-         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4 overflow-y-auto">
-             <div className="bg-slate-100 w-full min-h-screen md:min-h-0 md:max-w-5xl md:h-[90vh] rounded-xl shadow-2xl flex flex-col overflow-hidden">
+         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4 overflow-y-auto print:p-0 print:bg-white print:block">
+             <div className="bg-slate-100 w-full min-h-screen md:min-h-0 md:max-w-5xl md:h-[90vh] rounded-xl shadow-2xl flex flex-col overflow-hidden print:w-full print:shadow-none print:h-auto print:rounded-none">
                  <div className="bg-slate-800 text-white p-4 flex justify-between items-center shrink-0 print:hidden">
                     <h3 className="font-bold flex items-center gap-2"><Eye size={18}/> Proposal Preview</h3>
-                    <div className="flex gap-4">
-                        <div className="flex bg-slate-700 rounded-lg p-1"><button onClick={() => setPreviewTheme('Aspire')} className={`px-3 py-1 rounded text-xs font-medium ${previewTheme === 'Aspire' ? 'bg-blue-500' : 'text-slate-300'}`}>Aspire</button><button onClick={() => setPreviewTheme('Simple')} className={`px-3 py-1 rounded text-xs font-medium ${previewTheme === 'Simple' ? 'bg-blue-500' : 'text-slate-300'}`}>Simple</button></div>
-                        <button onClick={() => window.print()} className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded text-sm flex items-center gap-2"><Printer size={16}/> Print</button>
-                        <button onClick={() => setShowPreviewModal(false)} className="bg-red-500/80 hover:bg-red-600 px-3 py-1.5 rounded text-sm">Close</button>
+                    <div className="flex gap-3">
+                        <div className="flex bg-slate-700 rounded-lg p-1 mr-4">
+                           <button onClick={() => setPreviewTheme('Aspire')} className={`px-3 py-1 rounded text-xs font-medium transition-colors ${previewTheme === 'Aspire' ? 'bg-blue-500' : 'text-slate-300 hover:text-white'}`}>Aspire</button>
+                           <button onClick={() => setPreviewTheme('Simple')} className={`px-3 py-1 rounded text-xs font-medium transition-colors ${previewTheme === 'Simple' ? 'bg-blue-500' : 'text-slate-300 hover:text-white'}`}>Simple</button>
+                        </div>
+                        <button onClick={handleDownloadWord} className="bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded text-sm flex items-center gap-2 transition-colors">
+                           <FileTextIcon size={16}/> Word
+                        </button>
+                        <button onClick={() => window.print()} className="bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded text-sm flex items-center gap-2 transition-colors">
+                           <Printer size={16}/> Print / PDF
+                        </button>
+                        <button onClick={() => setShowPreviewModal(false)} className="bg-red-500/80 hover:bg-red-600 px-3 py-1.5 rounded text-sm transition-colors">
+                           Close
+                        </button>
                     </div>
                  </div>
-                 <div className="flex-1 overflow-y-auto p-4 md:p-8"><ProposalTemplates theme={previewTheme} quotation={quotation} itinerary={days} costSheet={costSheet}/></div>
+                 <div ref={proposalRef} className="flex-1 overflow-y-auto p-4 md:p-8 print:overflow-visible print:p-0">
+                    <ProposalTemplates theme={previewTheme} quotation={quotation} itinerary={days} costSheet={costSheet}/>
+                 </div>
              </div>
          </div>
       )}
