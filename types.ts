@@ -99,14 +99,31 @@ export interface Agent {
   id: string;
   code: string;
   companyName: string;
-  businessType: 'Agent' | 'B2B' | 'Corporate';
-  logo?: string;
-  website: string;
+  businessType: string;
+  website?: string;
   email: string;
   phone: string;
   assignedSales: string;
   assignedOps: string;
   status: 'Active' | 'Inactive';
+  logo?: string;
+  
+  // Extended Fields
+  contactPerson?: string;
+  companyType?: string;
+  consortia?: string;
+  iso?: string;
+  competitor?: string;
+  marketType?: string;
+  department?: string;
+  nationalityType?: string;
+  nationalityName?: string;
+  country?: string;
+  category?: string;
+  tourType?: string;
+  preferredLanguage?: string;
+  accountingCode?: string;
+  localAgent?: boolean;
 }
 
 export interface Supplier {
@@ -119,28 +136,87 @@ export interface Supplier {
   services: string[];
   paymentTerms: 'Cash' | 'Credit';
   destination: string;
+  status?: 'Active' | 'Inactive';
 }
 
 export interface B2CClient {
   id: string;
-  name: string;
+  // Personal Info
+  title: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  name: string; // Composite for display
   gender: 'Male' | 'Female' | 'Other';
   dob: string;
+  nationalityType: string;
   nationality: string;
+  anniversaryDate?: string;
+  accountingCode?: string;
+  
+  // Contact Info
+  mobileCode: string;
   mobile: string;
   email: string;
+  emailType?: string;
+  
+  // Address Info
   address: string;
+  country: string;
+  state: string;
+  city: string;
+  zipCode: string;
+  
+  // CRM & Preferences (Right Column)
+  salesPerson: string;
+  status: 'Active' | 'Inactive';
+  familyCode?: string;
+  familyRelation?: string;
+  
+  marketType?: string;
+  holidayPreference?: string;
+  covidVaccinated?: 'Yes' | 'No';
+  newsletter?: 'Yes' | 'No';
+  
   preferences: {
-    meal: 'Veg' | 'Non-Veg';
+    meal: string;
     seat: string;
     special: string;
+    accommodation?: string;
   };
+  
+  // Emergency Contact
   emergencyContact: {
     name: string;
     relation: string;
+    code?: string;
     phone: string;
   };
-  status: 'Active' | 'Inactive';
+  
+  // Documents
+  passportNumber?: string;
+  visaNumber?: string;
+  documents: {
+    id: string;
+    type: string;
+    required: string;
+    number: string;
+    issueDate: string;
+    expiryDate: string;
+    issueCountry: string;
+    title: string;
+    file?: string;
+  }[];
+  
+  // Social Media
+  socialMedia: {
+    facebook: string;
+    twitter: string;
+    linkedin: string;
+    instagram: string;
+  };
+  
+  remarks: string[];
 }
 
 export interface Notification {
