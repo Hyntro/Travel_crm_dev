@@ -325,11 +325,40 @@ export interface TravelPackage {
   description: string;
 }
 
+// New SubSeries Interface
+export interface SubSeries {
+  id: string;
+  name: string;
+  code: string;
+  tourCode: string;
+  startDate: string;
+  endDate: string;
+  totalDays: number;
+  adults: number;
+  child: number;
+  rooms: {
+    single: number;
+    double: number;
+    twin: number;
+    triple: number;
+  };
+  extraBeds: {
+    adult: number;
+    childWithBed: number;
+    childNoBed: number;
+  };
+  status: 'Confirmed' | 'Tentative';
+  active: boolean;
+  createdAt: string;
+}
+
 export interface SeriesMaster {
   id: string;
   code: string;
   name: string;
   clientType: 'Agent' | 'Direct';
+  clientName?: string;
+  destination?: string;
   marketType: string;
   tourType: string;
   vehicle: string;
@@ -337,18 +366,35 @@ export interface SeriesMaster {
   mealPlan: 'CP' | 'MAP' | 'AP';
   year: number;
   season: 'Summer' | 'Winter';
+  status: 'Active' | 'Inactive' | 'Completed';
   departures: { date: string; seats: number; booked: number }[];
+  
+  // Extended fields for form
+  nationality?: string;
+  planType?: 'Day Wise' | 'Date Wise';
+  totalNights?: number;
+  operationPerson?: string;
+  salesPerson?: string;
+  additionalInfo?: string;
+  description?: string;
+  itinerary?: { day: number; destination: string }[];
+  
+  // New Sub Series List
+  subSeries?: SubSeries[];
 }
 
 export interface Invoice {
   id: string;
   date: string;
   queryId: string;
+  tourId?: string;
   clientName: string;
   companyName: string;
   amount: number;
   currency: string;
   status: 'Paid' | 'Unpaid' | 'Cancelled';
+  invoiceFormat?: string;
+  invoiceType?: string;
 }
 
 // Phase 5 Models

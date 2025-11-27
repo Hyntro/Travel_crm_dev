@@ -28,13 +28,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout }) 
     { id: 'agents', label: 'Agent Management', icon: Building2 },
     { id: 'suppliers', label: 'Supplier Master', icon: Truck },
     { id: 'b2c', label: 'B2C Customers', icon: UserCheck },
-    { id: 'users', label: 'User Management', icon: Users },
     { id: 'master', label: 'Master Hub', icon: Database },
   ];
 
   const toolsItems = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'settings', label: 'Personal Settings', icon: Settings },
   ];
 
   return (
@@ -141,22 +139,51 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout }) 
       </div>
 
       <div className="p-4 border-t border-slate-800 bg-slate-900/50">
-        <div className="flex items-center gap-3 px-2 mb-3">
-          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-bold text-white border-2 border-indigo-400">
+        <div className="flex items-center gap-3 px-2 mb-4">
+          <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold text-white border-2 border-indigo-400 shadow-sm cursor-default">
             DA
           </div>
           <div className="overflow-hidden">
-            <p className="text-sm font-medium text-white truncate">Demo Admin</p>
+            <p className="text-sm font-bold text-white truncate">Demo Admin</p>
             <p className="text-xs text-slate-400 truncate">Administrator</p>
           </div>
         </div>
-        <button 
-          onClick={onLogout}
-          className="w-full flex items-center space-x-3 px-2 py-2 text-slate-400 hover:text-red-400 transition-colors text-sm"
-        >
-          <LogOut size={16} />
-          <span>Sign Out</span>
-        </button>
+        
+        <div className="space-y-1">
+            <button 
+                onClick={() => setActiveTab('settings')}
+                className={`w-full flex items-center space-x-3 px-2 py-2 rounded-lg transition-all duration-200 ${
+                  activeTab === 'settings'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+            >
+                <Settings size={16} />
+                <span className="font-medium text-sm">Personal Settings</span>
+            </button>
+
+            <button 
+                onClick={() => setActiveTab('users')}
+                className={`w-full flex items-center space-x-3 px-2 py-2 rounded-lg transition-all duration-200 ${
+                  activeTab === 'users'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+            >
+                <Users size={16} />
+                <span className="font-medium text-sm">User Management</span>
+            </button>
+
+            <div className="h-px bg-slate-800 my-2 mx-1"></div>
+
+            <button 
+            onClick={onLogout}
+            className="w-full flex items-center space-x-3 px-2 py-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-colors text-sm"
+            >
+            <LogOut size={16} />
+            <span>Sign Out</span>
+            </button>
+        </div>
       </div>
     </div>
   );

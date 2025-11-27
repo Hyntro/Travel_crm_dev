@@ -50,7 +50,7 @@ const App: React.FC = () => {
       
       // Tools
       case 'notifications': return <Notifications />;
-      case 'settings': return <Settings />;
+      case 'settings': return <Settings onBack={() => setActiveTab('dashboard')} />;
       default: return <Dashboard />;
     }
   };
