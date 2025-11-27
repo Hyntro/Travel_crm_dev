@@ -1,31 +1,32 @@
+
 import React from 'react';
-import { User, Mail, Phone, MapPin, BadgeCheck, Edit2, Key } from 'lucide-react';
+import { User, Mail, Phone, MapPin, BadgeCheck, Edit2, Key, Shield, CheckCircle } from 'lucide-react';
 import { User as UserType } from '../types';
 
-// Mock current user
+// Mock current user (Updated to match Login Demo Credentials)
 const currentUser: UserType = {
   id: '1',
-  code: 'USR001',
-  name: 'John Doe',
-  email: 'john.doe@travelcrm.com',
-  mobile: '+1 (555) 123-4567',
-  role: 'Operation Manager',
-  department: 'Operations',
-  reportingManager: 'Sarah Smith (VP)',
+  code: 'ADM001',
+  name: 'Demo Admin',
+  email: 'demo@travelcrm.com',
+  mobile: '+1 (555) 000-ADMIN',
+  role: 'Administrator',
+  department: 'Management',
+  reportingManager: '-',
   status: 'Active',
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
+  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin',
   address: {
-    street: '123 Business Park Dr',
+    street: '1 World Trade Center',
     city: 'New York',
     state: 'NY',
-    zip: '10001',
+    zip: '10007',
     country: 'USA'
   }
 };
 
 const Settings: React.FC = () => {
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-8 max-w-5xl mx-auto h-full overflow-y-auto">
       <div className="mb-8 border-b border-slate-200 pb-4">
         <h2 className="text-3xl font-bold text-slate-800">Personal Settings</h2>
         <p className="text-slate-500 mt-1">Manage your profile information and account security.</p>
@@ -33,13 +34,13 @@ const Settings: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Col: Profile Card */}
-        <div className="col-span-1">
+        <div className="col-span-1 space-y-6">
           <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex flex-col items-center text-center">
             <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-50 mb-4 bg-slate-100">
                <img src={currentUser.avatar} alt="Profile" className="w-full h-full object-cover" />
             </div>
             <h3 className="text-xl font-bold text-slate-800">{currentUser.name}</h3>
-            <span className="mt-2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+            <span className="mt-2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium">
               <BadgeCheck size={14} />
               {currentUser.role}
             </span>
@@ -54,6 +55,34 @@ const Settings: React.FC = () => {
                  <Key size={16} /> Change Password
                </button>
             </div>
+          </div>
+
+          {/* Role Capabilities */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+             <h4 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2 uppercase tracking-wider">
+               <Shield size={16} className="text-purple-600" /> Role & Permissions
+             </h4>
+             <div className="space-y-3">
+                <div className="flex items-start gap-2 text-sm text-slate-600">
+                   <CheckCircle size={16} className="text-green-500 mt-0.5 shrink-0"/>
+                   <span>Full System Access</span>
+                </div>
+                <div className="flex items-start gap-2 text-sm text-slate-600">
+                   <CheckCircle size={16} className="text-green-500 mt-0.5 shrink-0"/>
+                   <span>User & Role Management</span>
+                </div>
+                <div className="flex items-start gap-2 text-sm text-slate-600">
+                   <CheckCircle size={16} className="text-green-500 mt-0.5 shrink-0"/>
+                   <span>Financial Approvals</span>
+                </div>
+                <div className="flex items-start gap-2 text-sm text-slate-600">
+                   <CheckCircle size={16} className="text-green-500 mt-0.5 shrink-0"/>
+                   <span>Master Configuration</span>
+                </div>
+                <div className="mt-4 p-3 bg-slate-50 rounded text-xs text-slate-500">
+                   Role assigned by System Root. Contact IT for privilege escalation.
+                </div>
+             </div>
           </div>
         </div>
 
@@ -77,9 +106,9 @@ const Settings: React.FC = () => {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Mobile Number</label>
-                <div className="flex items-center bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-500 cursor-not-allowed">
-                  <Phone size={16} className="mr-2 opacity-50" />
-                  {currentUser.mobile}
+                <div className="flex items-center bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-700">
+                  <Phone size={16} className="mr-2 text-slate-400" />
+                  <input type="text" defaultValue={currentUser.mobile} className="w-full outline-none text-sm"/>
                 </div>
               </div>
             </div>

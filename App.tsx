@@ -2,8 +2,6 @@
 import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
-import Leads from './components/Leads';
-import ItineraryGenerator from './components/ItineraryGenerator';
 import UserManagement from './components/UserManagement';
 import Settings from './components/Settings';
 import Login from './components/Login';
@@ -53,8 +51,6 @@ const App: React.FC = () => {
       // Tools
       case 'notifications': return <Notifications />;
       case 'settings': return <Settings />;
-      case 'leads': return <Leads />;
-      case 'planner': return <ItineraryGenerator />;
       default: return <Dashboard />;
     }
   };

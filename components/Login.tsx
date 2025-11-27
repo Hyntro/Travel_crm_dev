@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Lock, Mail, Globe, Info } from 'lucide-react';
 
@@ -34,23 +35,29 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         </svg>
       </div>
 
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden z-10 mx-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden z-10 mx-4 animate-in zoom-in-95 duration-300">
         <div className="p-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 mb-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 mb-4 shadow-sm">
               <Globe size={24} />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900">Login</h1>
+            <h1 className="text-2xl font-bold text-slate-900">Admin Login</h1>
             <p className="text-slate-500 mt-2">Access your Travel CRM Dashboard</p>
           </div>
 
-          {/* Demo Credentials Hint */}
-          <div className="mb-6 bg-blue-50 border border-blue-100 rounded-lg p-3 flex items-start gap-3">
-            <Info size={18} className="text-blue-600 mt-0.5 shrink-0" />
-            <div className="text-xs text-blue-800">
-              <span className="font-bold block mb-1">Demo Credentials:</span>
-              <p>Email: <span className="font-mono font-medium">demo@travelcrm.com</span></p>
-              <p>Password: <span className="font-mono font-medium">demo123</span></p>
+          {/* Demo Credentials Hint - Highlighted */}
+          <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3 shadow-sm">
+            <div className="bg-blue-100 p-1.5 rounded-full text-blue-600 mt-0.5">
+               <Info size={16} />
+            </div>
+            <div className="text-xs text-blue-900">
+              <span className="font-bold block mb-1 text-sm">Demo Access Credentials:</span>
+              <div className="grid grid-cols-[60px_1fr] gap-1 mt-1">
+                 <span className="font-medium text-slate-500">Email:</span>
+                 <span className="font-mono font-bold select-all">demo@travelcrm.com</span>
+                 <span className="font-medium text-slate-500">Pass:</span>
+                 <span className="font-mono font-bold select-all">demo123</span>
+              </div>
             </div>
           </div>
 
@@ -66,7 +73,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors bg-slate-50 focus:bg-white"
                   placeholder="name@company.com"
                 />
               </div>
@@ -83,7 +90,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors bg-slate-50 focus:bg-white"
                   placeholder="••••••••"
                 />
               </div>
@@ -112,12 +119,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-red-500 via-purple-600 to-blue-600 hover:from-red-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all hover:scale-[1.02]"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg shadow-blue-500/30 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                'Sign In'
+                'Sign In to Dashboard'
               )}
             </button>
           </form>

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, Filter, Plus, DollarSign, X, Building2, Plane, Flag, Utensils, Sparkles } from 'lucide-react';
+import { Search, Filter, Plus, DollarSign, X, Building2, Plane, Flag, Utensils, Sparkles, Bus } from 'lucide-react';
 
 interface ServiceModalsProps {
   isOpen: boolean;
@@ -38,12 +38,17 @@ const mockRestaurants = [
 const mockAdditionals = [
   { id: 'm1', name: 'SIM Card', type: 'Misc', cost: 20, supplier: 'Direct', costType: 'Per Person' },
   { id: 'm2', name: 'Visa Fee', type: 'Visa', cost: 100, supplier: 'Embassy', costType: 'Per Person' },
+  { id: 'm3', name: 'Gala Dinner Supplement', type: 'Event', cost: 500, supplier: 'Hotel', costType: 'Group Cost' },
 ];
 
 const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, city, onAdd }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [overrideCost, setOverrideCost] = useState<number | string>('');
+  
+  // Specific State for New Modules
+  const [mealType, setMealType] = useState<'Lunch' | 'Dinner'>('Dinner');
+  const [costType, setCostType] = useState<'Per Person' | 'Group Cost'>('Per Person');
 
   if (!isOpen) return null;
 
@@ -72,6 +77,9 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
   const handleSelect = (item: any) => {
     setSelectedItem(item);
     setOverrideCost(item.cost);
+    // Defaults
+    if (type === 'restaurant') setMealType(item.mealType || 'Dinner');
+    if (type === 'additional') setCostType(item.costType || 'Per Person');
   };
 
   const handleConfirmAdd = () => {
@@ -80,10 +88,15 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
     // Construct the payload based on type
     const payload: any = { ...selectedItem, cost: Number(overrideCost) };
     
-    // Map to specific interfaces if needed, or pass generalized object
-    // For Hotel: needs roomType, mealPlan (simulate defaults)
+    // Specific Mapping
     if (type === 'hotel') {
        Object.assign(payload, { roomType: 'Standard', mealPlan: 'CP', checkIn: '14:00', checkOut: '11:00' });
+    }
+    if (type === 'restaurant') {
+       Object.assign(payload, { mealType: mealType });
+    }
+    if (type === 'additional') {
+       Object.assign(payload, { costType: costType });
     }
     
     onAdd(payload);
@@ -103,7 +116,7 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
               {type === 'hotel' && <Building2 className="text-blue-500" size={20} />}
               {type === 'flight' && <Plane className="text-orange-500" size={20} />}
               {type === 'activity' && <Flag className="text-green-500" size={20} />}
-              {type === 'transport' && <Flag className="text-orange-600" size={20} />}
+              {type === 'transport' && <Bus className="text-orange-600" size={20} />}
               {type === 'restaurant' && <Utensils className="text-red-500" size={20} />}
               {type === 'additional' && <Sparkles className="text-purple-500" size={20} />}
               Add {type} Service
@@ -159,8 +172,8 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
                           {type === 'hotel' && <span>{item.type} • {item.city}</span>}
                           {type === 'flight' && <span>{item.sector} • {item.time}</span>}
                           {(type === 'activity' || type === 'transport') && <span>{item.type} • {item.duration}</span>}
-                          {type === 'restaurant' && <span>{item.type} • {item.supplier}</span>}
-                          {type === 'additional' && <span>{item.type} • {item.costType}</span>}
+                          {type === 'restaurant' && <span className="text-red-600 font-medium">{item.mealType} • {item.supplier}</span>}
+                          {type === 'additional' && <span className="text-purple-600 font-medium">{item.costType} • {item.supplier}</span>}
                        </div>
                     </div>
                     
@@ -177,8 +190,8 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
         {/* Footer / Action Bar */}
         {selectedItem && (
           <div className="p-4 bg-white border-t border-slate-100 shadow-lg animate-in slide-in-from-bottom-2">
-             <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
+             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex-1 w-full md:w-auto flex items-center gap-4">
                    <div>
                       <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Confirm Price</label>
                       <div className="relative w-32">
@@ -191,9 +204,42 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
                          />
                       </div>
                    </div>
-                   <div className="text-xs text-slate-500 pt-3">
-                      Selected: <strong>{selectedItem.name}</strong>
-                   </div>
+
+                   {/* Module 26 Extension: Restaurant Meal Type */}
+                   {type === 'restaurant' && (
+                       <div>
+                          <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Meal Type</label>
+                          <select 
+                            value={mealType}
+                            onChange={(e) => setMealType(e.target.value as any)}
+                            className="border border-slate-300 rounded px-2 py-1.5 text-sm bg-white outline-none focus:border-red-500"
+                          >
+                            <option value="Lunch">Lunch</option>
+                            <option value="Dinner">Dinner</option>
+                          </select>
+                       </div>
+                   )}
+
+                   {/* Module 26 Extension: Additional Service Cost Type */}
+                   {type === 'additional' && (
+                       <div>
+                          <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Cost Type</label>
+                          <div className="flex bg-slate-100 rounded p-1 gap-1">
+                             <button 
+                               onClick={() => setCostType('Per Person')}
+                               className={`px-2 py-0.5 text-xs rounded transition-colors ${costType === 'Per Person' ? 'bg-white shadow text-slate-800' : 'text-slate-500'}`}
+                             >
+                               <span className="inline mr-1 font-bold">PP</span>
+                             </button>
+                             <button 
+                               onClick={() => setCostType('Group Cost')}
+                               className={`px-2 py-0.5 text-xs rounded transition-colors ${costType === 'Group Cost' ? 'bg-white shadow text-slate-800' : 'text-slate-500'}`}
+                             >
+                               <span className="inline mr-1 font-bold">GRP</span>
+                             </button>
+                          </div>
+                       </div>
+                   )}
                 </div>
                 
                 <div className="flex gap-2">

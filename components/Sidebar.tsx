@@ -34,8 +34,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout }) 
 
   const toolsItems = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'leads', label: 'Leads AI', icon: Briefcase },
-    { id: 'planner', label: 'Itinerary AI', icon: Map },
     { id: 'settings', label: 'Personal Settings', icon: Settings },
   ];
 
@@ -144,12 +142,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout }) 
 
       <div className="p-4 border-t border-slate-800 bg-slate-900/50">
         <div className="flex items-center gap-3 px-2 mb-3">
-          <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-xs font-bold text-white">
-            JD
+          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-bold text-white border-2 border-indigo-400">
+            DA
           </div>
           <div className="overflow-hidden">
-            <p className="text-sm font-medium text-white truncate">John Doe</p>
-            <p className="text-xs text-slate-400 truncate">Operation Manager</p>
+            <p className="text-sm font-medium text-white truncate">Demo Admin</p>
+            <p className="text-xs text-slate-400 truncate">Administrator</p>
           </div>
         </div>
         <button 
