@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ArrowLeft, User, Phone, Mail, Reply, Calendar, ChevronDown, ChevronUp, Plus, CheckCircle, ExternalLink, CreditCard, Users, FileText, Send, Edit, Eye, Trash2, X, Save } from 'lucide-react';
+import { ArrowLeft, User, Phone, Mail, Reply, Calendar, ChevronDown, ChevronUp, Plus, CheckCircle, ExternalLink, CreditCard, Users, FileText, Send, Edit, Eye, Trash2, X, Save, Copy, Hotel } from 'lucide-react';
 import { TravelQuery, Quotation } from '../types';
 import QuotationBuilder from './QuotationBuilder';
 
@@ -11,7 +11,21 @@ interface QueryDetailProps {
 
 // Mock initial Quotations for the Query
 const mockQuotations: Quotation[] = [
-  // Intentionally empty for demo effect, or can populate
+  {
+    id: 'Q1',
+    queryId: 'DB25-26/000785',
+    quoteCode: 'DB25-26/000789/A',
+    version: 'A',
+    status: 'Draft',
+    hotelCategory: 'Deluxe',
+    mealPlan: 'MAP',
+    clientName: 'Robert Kingsley',
+    destination: 'Japan',
+    updatedAt: '26-11-2025 11:27:56 PM',
+    paxAdult: 2,
+    paxChild: 0,
+    travelDate: '26/11/2025'
+  }
 ];
 
 const QueryDetail: React.FC<QueryDetailProps> = ({ query, onBack }) => {
@@ -62,13 +76,11 @@ const QueryDetail: React.FC<QueryDetailProps> = ({ query, onBack }) => {
         mealPlan: 'CP',
         clientName: query.clientName,
         destination: query.destination,
-        updatedAt: new Date().toISOString().split('T')[0],
-        paxAdult: query.pax, // Assuming pax from query
+        updatedAt: new Date().toLocaleString(),
+        paxAdult: query.pax, 
         paxChild: 0,
         travelDate: query.tourDate
     };
-    
-    // In real app, we would save other form fields (Hotel Category Type etc) to the quotation object
     
     setQuotations([...quotations, newQuote]);
     setShowAddQuoteModal(false);
@@ -163,13 +175,7 @@ const QueryDetail: React.FC<QueryDetailProps> = ({ query, onBack }) => {
          </div>
       </div>
 
-      {/* 3. Status Bar */}
-      <div className={`${currentStatusColor} text-white px-6 py-2 text-sm font-bold flex items-center justify-between shrink-0`}>
-         <span>Current Status: {query.status}</span>
-         <span className="text-xs opacity-80 font-normal">Last updated: Today, 11:30 AM</span>
-      </div>
-
-      {/* 4. Main Two-Panel Content */}
+      {/* 3. Main Two-Panel Content */}
       <div className="flex-1 flex overflow-hidden">
          
          {/* LEFT PANEL (Tabs & Content) */}
@@ -215,13 +221,6 @@ const QueryDetail: React.FC<QueryDetailProps> = ({ query, onBack }) => {
                               <div className="mt-2 text-xs text-slate-400 text-right">11:31 AM - 27-11-2025</div>
                            </div>
                         </div>
-                        <div className="flex gap-4 flex-row-reverse">
-                           <div className="w-8 h-8 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center text-xs font-bold text-blue-600">RK</div>
-                           <div className="flex-1 bg-blue-50 p-4 rounded-lg rounded-tr-none shadow-sm border border-blue-100">
-                              <p className="text-sm text-slate-700">Thanks. Please make sure to include a visit to Kyoto as discussed.</p>
-                              <div className="mt-2 text-xs text-blue-400 text-right">11:45 AM - 27-11-2025</div>
-                           </div>
-                        </div>
                      </div>
                      <div className="mt-8 bg-white p-4 rounded-xl border border-slate-200 shadow-sm sticky bottom-0">
                         <textarea placeholder="Type your reply here..." className="w-full border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-orange-400 outline-none resize-none h-24 mb-2"></textarea>
@@ -248,10 +247,11 @@ const QueryDetail: React.FC<QueryDetailProps> = ({ query, onBack }) => {
                         <div className="p-6">
                            <div className="flex justify-between items-center mb-6">
                               <div className="space-y-1">
-                                 <h3 className="text-lg font-bold text-slate-700">{query.tourDate} {query.clientName}</h3>
-                                 <div className="flex gap-2">
+                                 <div className="flex gap-2 items-center">
+                                    <span className="text-xs font-bold text-slate-500 uppercase">Subject</span>
                                     <span className="bg-blue-100 text-blue-600 text-[10px] px-2 py-0.5 rounded font-bold">Created</span>
                                  </div>
+                                 <h3 className="text-lg font-bold text-slate-700">{query.tourDate} SOI Ind</h3>
                               </div>
                               <div className="flex gap-2">
                                  <button 
@@ -260,7 +260,7 @@ const QueryDetail: React.FC<QueryDetailProps> = ({ query, onBack }) => {
                                  >
                                     Add Quotation
                                  </button>
-                                 <button className="bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+                                 <button onClick={onBack} className="bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
                                     Back
                                  </button>
                               </div>
@@ -268,37 +268,45 @@ const QueryDetail: React.FC<QueryDetailProps> = ({ query, onBack }) => {
 
                            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
                               <table className="w-full text-left">
-                                 <thead className="bg-slate-50 border-b border-slate-200">
+                                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-600">
                                     <tr>
-                                       <th className="px-4 py-3 text-xs font-bold text-slate-500 uppercase">Quotation ID</th>
-                                       <th className="px-4 py-3 text-xs font-bold text-slate-500 uppercase">Creation Date</th>
-                                       <th className="px-4 py-3 text-xs font-bold text-slate-500 uppercase">From Date</th>
-                                       <th className="px-4 py-3 text-xs font-bold text-slate-500 uppercase">To Date</th>
-                                       <th className="px-4 py-3 text-xs font-bold text-slate-500 uppercase">Duration</th>
-                                       <th className="px-4 py-3 text-right text-xs font-bold text-slate-500 uppercase">Action</th>
+                                       <th className="px-4 py-3 text-xs font-bold uppercase">Quotation ID.</th>
+                                       <th className="px-4 py-3 text-xs font-bold uppercase">Creation Date</th>
+                                       <th className="px-4 py-3 text-xs font-bold uppercase">FromDate</th>
+                                       <th className="px-4 py-3 text-xs font-bold uppercase">To Date</th>
+                                       <th className="px-4 py-3 text-xs font-bold uppercase">Duration</th>
+                                       <th className="px-4 py-3 text-center text-xs font-bold uppercase">Action</th>
+                                       <th className="px-2 py-3"></th>
                                     </tr>
                                  </thead>
                                  <tbody className="divide-y divide-slate-100">
                                     {quotations.length === 0 ? (
                                        <tr>
-                                          <td colSpan={6} className="px-4 py-8 text-center text-slate-400 text-sm">
+                                          <td colSpan={7} className="px-4 py-8 text-center text-slate-400 text-sm">
                                              No Quotation Found
                                           </td>
                                        </tr>
                                     ) : (
                                        quotations.map(quote => (
                                           <tr key={quote.id} className="hover:bg-slate-50">
-                                             <td className="px-4 py-3 text-sm font-medium text-blue-600">{quote.quoteCode}</td>
-                                             <td className="px-4 py-3 text-sm text-slate-600">{quote.updatedAt}</td>
-                                             <td className="px-4 py-3 text-sm text-slate-600">{quote.travelDate}</td>
-                                             <td className="px-4 py-3 text-sm text-slate-600">-</td>
-                                             <td className="px-4 py-3 text-sm text-slate-600">-</td>
-                                             <td className="px-4 py-3 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                   <button onClick={() => handleEditQuote(quote)} className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded" title="Edit"><Edit size={14}/></button>
-                                                   <button className="p-1.5 text-slate-500 bg-slate-100 hover:bg-slate-200 rounded" title="View"><Eye size={14}/></button>
-                                                   <button className="p-1.5 text-red-500 bg-red-50 hover:bg-red-100 rounded" title="Delete"><Trash2 size={14}/></button>
+                                             <td className="px-4 py-3">
+                                                <button onClick={() => handleEditQuote(quote)} className="text-green-600 text-sm font-medium hover:underline">{quote.quoteCode}</button>
+                                             </td>
+                                             <td className="px-4 py-3 text-xs text-slate-600">{quote.updatedAt}</td>
+                                             <td className="px-4 py-3 text-xs text-slate-600">{quote.travelDate}</td>
+                                             <td className="px-4 py-3 text-xs text-slate-600">{new Date(new Date(quote.travelDate.split('/').reverse().join('-')).getTime() + 86400000).toLocaleDateString()}</td>
+                                             <td className="px-4 py-3 text-xs text-slate-600">1N/2D</td>
+                                             <td className="px-4 py-3">
+                                                <div className="flex justify-center gap-1">
+                                                   <button className="px-2 py-1 bg-gray-200 text-slate-700 text-[10px] rounded hover:bg-gray-300 font-medium">Costsheet</button>
+                                                   <button className="px-2 py-1 bg-gray-200 text-slate-700 text-[10px] rounded hover:bg-gray-300 font-medium">Preview</button>
+                                                   <button className="px-2 py-1 bg-gray-200 text-slate-700 text-[10px] rounded hover:bg-gray-300 font-medium">Duplicate</button>
+                                                   <button className="px-2 py-1 bg-gray-200 text-slate-700 text-[10px] rounded hover:bg-gray-300 font-medium">Hotel Availabilty</button>
+                                                   <button className="px-2 py-1 bg-green-100 text-green-700 border border-green-600 text-[10px] rounded hover:bg-green-200 font-medium">Make Final</button>
                                                 </div>
+                                             </td>
+                                             <td className="px-2 py-3 text-center">
+                                                <button className="text-red-500 hover:text-red-700"><Trash2 size={14}/></button>
                                              </td>
                                           </tr>
                                        ))
