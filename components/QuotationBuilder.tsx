@@ -563,7 +563,14 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({ embedded = false, i
          />
       )}
 
-      <ServiceModals isOpen={serviceModalOpen} onClose={() => setServiceModalOpen(false)} type={activeServiceType} city={activeDayId ? days.find(d => d.id === activeDayId)?.cityName || '' : ''} onAdd={handleAddService}/>
+      <ServiceModals 
+        isOpen={serviceModalOpen} 
+        onClose={() => setServiceModalOpen(false)} 
+        type={activeServiceType} 
+        city={activeDayId ? days.find(d => d.id === activeDayId)?.cityName || '' : ''} 
+        date={activeDayId ? days.find(d => d.id === activeDayId)?.date : undefined}
+        onAdd={handleAddService}
+      />
     </div>
   );
 };

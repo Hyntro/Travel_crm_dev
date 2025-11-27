@@ -309,6 +309,50 @@ export interface DMSDocument {
   createdAt: string;
 }
 
+export interface PackageItineraryItem {
+  id: string;
+  dayNumber: number;
+  date: string;
+  dayName: string;
+  destination: string;
+}
+
+export interface PackageService {
+  id: string;
+  dayNumber: number;
+  type: 'Hotel' | 'Guide' | 'Activity' | 'Monument' | 'Transfer' | 'Flight' | 'Train' | 'Restaurant' | 'Other' | 'TPT' | 'Enroute' | 'Additional';
+  serviceName: string;
+  supplierName: string;
+  serviceType: string;
+  dayType: 'Full Day' | 'Half Day';
+  paxRange: string; 
+  paxSlab: string; 
+  perDayCost: number;
+  noOfDays: number;
+  totalCost: number;
+}
+
+export interface PackageCosting {
+  markupType: 'Universal' | 'Service Wise';
+  markups: {
+    hotel: number;
+    guide: number;
+    tourEscort: number;
+    activity: number;
+    entrance: number;
+    enroute: number;
+    transfer: number;
+    train: number;
+    flight: number;
+    restaurant: number;
+    other: number;
+  };
+  gstType: string;
+  gstPercentage: number;
+  currency: string;
+  roe: number;
+}
+
 export interface TravelPackage {
   id: string;
   code: string;
@@ -323,6 +367,12 @@ export interface TravelPackage {
   paxType: 'GIT' | 'FIT';
   status: 'Active' | 'Inactive';
   description: string;
+  packageValidity?: string;
+  additionalInfo?: string;
+  itinerary?: PackageItineraryItem[];
+  services?: PackageService[];
+  costing?: PackageCosting;
+  creationDate?: string;
 }
 
 // New SubSeries Interface

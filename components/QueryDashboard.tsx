@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
-import { Search, Calendar, Filter, Plus, FileText, ArrowRight, Briefcase, Globe, User, Phone, Mail, Clock, Hotel, MapPin, Save, X, AlignLeft, Users, Bed, Layers } from 'lucide-react';
+import { Search, Calendar, Filter, Plus, FileText, ArrowRight, Briefcase, Globe, User, Phone, Mail, Clock, Hotel, MapPin, Save, X, AlignLeft, Users, Bed, Layers, Trash2 } from 'lucide-react';
 import { TravelQuery, QueryStatus, QueryPriority } from '../types';
 import QueryDetail from './QueryDetail';
+import { initialCities } from './mockData';
 
 // Mock Data
 const initialQueries: TravelQuery[] = [
@@ -70,8 +70,81 @@ const QueryDashboard: React.FC = () => {
     adult: 2,
     child: 0,
     destination: '',
-    rooms: { sgl: 0, dbl: 0, twin: 0, tpl: 0, exbed: 0 }
+    rooms: { sgl: 0, dbl: 0, twin: 0, tpl: 0, exbed: 0 },
+    itinerary: [] as { day: number; date: string; destination: string }[]
   });
+
+  const handleDateChange = (field: 'fromDate' | 'toDate', value: string) => {
+    const updatedData = { ...formData, [field]: value };
+    
+    if (updatedData.fromDate && updatedData.toDate) {
+      const start = new Date(updatedData.fromDate);
+      const end = new Date(updatedData.toDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+      updatedData.totalNights = diffDays > 0 ? diffDays : 0;
+    }
+    setFormData(updatedData);
+  };
+
+  const handleNightsChange = (value: string) => {
+    const nights = parseInt(value) || 0;
+    const updatedData = { ...formData, totalNights: nights };
+
+    if (updatedData.fromDate && nights > 0) {
+        const start = new Date(updatedData.fromDate);
+        const end = new Date(start);
+        end.setDate(start.getDate() + nights);
+        updatedData.toDate = end.toISOString().split('T')[0];
+    }
+    setFormData(updatedData);
+  };
+
+  const handleGenerateItinerary = () => {
+    if (!formData.fromDate || formData.totalNights <= 0) return;
+
+    const start = new Date(formData.fromDate);
+    const itineraryItems = [];
+    const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    // Usually Itinerary Days = Nights + 1
+    const totalDays = formData.totalNights + 1;
+
+    for (let i = 0; i < totalDays; i++) {
+        const currentDate = new Date(start);
+        currentDate.setDate(start.getDate() + i);
+        const dayName = weekDays[currentDate.getDay()];
+        const displayDate = `${currentDate.getDate().toString().padStart(2, '0')}-${(currentDate.getMonth()+1).toString().padStart(2, '0')}-${currentDate.getFullYear()}`;
+        
+        itineraryItems.push({
+            day: i + 1,
+            date: `${displayDate} /${dayName}`,
+            destination: ''
+        });
+    }
+    setFormData({ ...formData, itinerary: itineraryItems });
+  };
+
+  const handleItineraryChange = (index: number, value: string) => {
+    const updatedItinerary = [...formData.itinerary];
+    updatedItinerary[index].destination = value;
+    setFormData({ ...formData, itinerary: updatedItinerary });
+  };
+
+  const handleAddDestinationRow = () => {
+    const nextDay = formData.itinerary.length + 1;
+    setFormData({
+        ...formData,
+        itinerary: [...formData.itinerary, { day: nextDay, date: `Day ${nextDay}`, destination: '' }]
+    });
+  };
+
+  const handleRemoveDestinationRow = (index: number) => {
+    const updatedItinerary = formData.itinerary.filter((_, idx) => idx !== index);
+    // Re-index days
+    const reIndexed = updatedItinerary.map((item, idx) => ({ ...item, day: idx + 1 }));
+    setFormData({ ...formData, itinerary: reIndexed });
+  };
 
   const handleSave = () => {
     const newQuery: TravelQuery = {
@@ -276,23 +349,72 @@ const QueryDashboard: React.FC = () => {
                        <div>
                           <label className="block text-xs font-semibold text-slate-500 mb-1">From Date</label>
                           <div className="relative">
-                             <input type="date" className="w-full px-2 py-2 border border-slate-300 rounded text-xs focus:border-orange-400 outline-none" value={formData.fromDate} onChange={e=>setFormData({...formData, fromDate: e.target.value})}/>
+                             <input type="date" className="w-full px-2 py-2 border border-slate-300 rounded text-xs focus:border-orange-400 outline-none" value={formData.fromDate} onChange={e=>handleDateChange('fromDate', e.target.value)}/>
                           </div>
                        </div>
                        <div>
                           <label className="block text-xs font-semibold text-slate-500 mb-1">To Date</label>
                           <div className="relative">
-                             <input type="date" className="w-full px-2 py-2 border border-slate-300 rounded text-xs focus:border-orange-400 outline-none" value={formData.toDate} onChange={e=>setFormData({...formData, toDate: e.target.value})}/>
+                             <input type="date" className="w-full px-2 py-2 border border-slate-300 rounded text-xs focus:border-orange-400 outline-none" value={formData.toDate} onChange={e=>handleDateChange('toDate', e.target.value)}/>
                           </div>
                        </div>
                        <div>
                           <label className="block text-xs font-semibold text-slate-500 mb-1">Total Nights</label>
                           <div className="flex gap-1">
-                             <input type="number" readOnly className="w-full bg-slate-100 border border-slate-200 rounded px-2 py-2 text-xs text-center" value={5} />
-                             <button className="bg-purple-500 text-white px-2 rounded text-xs">Add</button>
+                             <input type="number" className="w-full border border-slate-300 rounded px-2 py-2 text-xs text-center font-bold text-slate-700 focus:border-orange-400 outline-none" value={formData.totalNights} onChange={(e) => handleNightsChange(e.target.value)} />
+                             <button onClick={handleGenerateItinerary} className="bg-purple-500 text-white px-2 rounded text-xs hover:bg-purple-600 transition-colors">Add</button>
                           </div>
                        </div>
                     </div>
+
+                    {/* Itinerary Table */}
+                    {formData.itinerary.length > 0 && (
+                        <div className="mt-4 border border-slate-200 rounded-lg overflow-hidden animate-in fade-in">
+                            <div className="flex justify-between items-center p-2 bg-slate-50 border-b border-slate-200">
+                                <span className="text-xs font-bold text-slate-600">Itinerary</span>
+                                <button onClick={handleAddDestinationRow} className="text-[10px] bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded shadow-sm">
+                                    + Add Destination
+                                </button> 
+                            </div>
+                            <div className="max-h-60 overflow-y-auto">
+                                <table className="w-full text-xs text-left">
+                                    <thead className="bg-slate-100 text-slate-600 font-bold sticky top-0 z-10">
+                                        <tr>
+                                            <th className="px-2 py-2 border-b border-r">Sr.</th>
+                                            <th className="px-2 py-2 border-b border-r">Date/Day</th>
+                                            <th className="px-2 py-2 border-b border-r">Destination</th>
+                                            <th className="px-2 py-2 border-b w-8"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        {formData.itinerary.map((item, idx) => (
+                                            <tr key={idx} className="hover:bg-slate-50">
+                                                <td className="px-2 py-2 border-r text-center">{item.day}</td>
+                                                <td className="px-2 py-2 border-r whitespace-nowrap">{item.date}</td>
+                                                <td className="px-2 py-2 border-r">
+                                                    <select 
+                                                        className="w-full border border-slate-200 rounded px-1 py-1 text-xs outline-none focus:border-blue-500 bg-white"
+                                                        value={item.destination}
+                                                        onChange={(e) => handleItineraryChange(idx, e.target.value)}
+                                                    >
+                                                        <option value="">Select City</option>
+                                                        {initialCities.map(c => (
+                                                            <option key={c.id} value={c.name}>{c.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </td>
+                                                <td className="px-2 py-2 text-center">
+                                                    <button onClick={() => handleRemoveDestinationRow(idx)} className="text-red-400 hover:text-red-600">
+                                                        <Trash2 size={12} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
                  </div>
               </div>
            </div>

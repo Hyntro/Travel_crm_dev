@@ -1,21 +1,25 @@
 
 import React, { useState } from 'react';
-import { Search, Filter, Plus, DollarSign, X, Building2, Plane, Flag, Utensils, Sparkles, Bus } from 'lucide-react';
+import { Search, Filter, Plus, DollarSign, X, Building2, Plane, Flag, Utensils, Sparkles, Bus, Calendar, Edit2, Check } from 'lucide-react';
 
 interface ServiceModalsProps {
   isOpen: boolean;
   onClose: () => void;
   type: 'hotel' | 'flight' | 'transport' | 'activity' | 'restaurant' | 'additional';
   city: string;
+  date?: string;
   onAdd: (serviceData: any) => void;
 }
 
-// Mock Master Data
+// Enhanced Mock Data for Hotels matching the specific table requirements
 const mockHotels = [
-  { id: 'h1', name: 'Hilton Tokyo', city: 'Tokyo', type: 'Deluxe', cost: 250, supplier: 'Agoda' },
-  { id: 'h2', name: 'Hotel Sunroute Plaza', city: 'Tokyo', type: 'Standard', cost: 120, supplier: 'Direct' },
-  { id: 'h3', name: 'Kyoto Granvia', city: 'Kyoto', type: 'Luxury', cost: 350, supplier: 'Expedia' },
-  { id: 'h4', name: 'Ritz Carlton', city: 'Osaka', type: 'Luxury', cost: 500, supplier: 'HotelBeds' },
+  { id: 'h1', name: 'Admiral Plaza', city: 'Delhi', starRating: '3 Star', hotelType: 'Capsule hotel', roomType: 'Deluxe room', mealPlan: 'CP', supplier: '1135 AD Amer Restaurant - [SU000010]', category: '5 Star/Capsule hotel', tariffType: 'Normal', rateValid: '01-10-2025 / 31-03-2026', cost: 2500 },
+  { id: 'h2', name: 'Africa Avenue', city: 'Delhi', starRating: '5 Star', hotelType: 'Heritage', roomType: 'Deluxe room', mealPlan: 'CP', supplier: 'Africa Avenue - [SU000072]', category: '5 Star/Heritage', tariffType: 'Normal', rateValid: '01-10-2023 / 31-12-2027', cost: 4500 },
+  { id: 'h3', name: 'Airport Residency Delhi', city: 'Delhi', starRating: '4 Star', hotelType: 'Heritage', roomType: 'Suite', mealPlan: 'EP', supplier: 'Direct', category: '4 Star/Heritage', tariffType: 'Normal', rateValid: '01-01-2025 / 31-12-2025', cost: 5500 },
+  { id: 'h4', name: 'Amarya Haveli (closed)', city: 'Delhi', starRating: '5 Star', hotelType: 'Heritage', roomType: '', mealPlan: '', supplier: '', category: '5 Star/Heritage', tariffType: '', rateValid: '', cost: 0 },
+  { id: 'h5', name: 'Amarya Villa', city: 'Delhi', starRating: '5 Star', hotelType: 'Heritage', roomType: '', mealPlan: '', supplier: '', category: '5 Star/Heritage', tariffType: '', rateValid: '', cost: 0 },
+  { id: 'h6', name: 'Ambassador New Delhi', city: 'Delhi', starRating: '5 Star', hotelType: 'Heritage', roomType: '', mealPlan: '', supplier: '', category: '5 Star/Heritage', tariffType: '', rateValid: '', cost: 0 },
+  { id: 'h7', name: 'Andaz Delhi', city: 'Delhi', starRating: '5 Star', hotelType: 'Heritage', roomType: '', mealPlan: '', supplier: '', category: '5 Star/Heritage', tariffType: '', rateValid: '', cost: 0 },
 ];
 
 const mockFlights = [
@@ -41,7 +45,7 @@ const mockAdditionals = [
   { id: 'm3', name: 'Gala Dinner Supplement', type: 'Event', cost: 500, supplier: 'Hotel', costType: 'Group Cost' },
 ];
 
-const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, city, onAdd }) => {
+const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, city, date, onAdd }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [overrideCost, setOverrideCost] = useState<number | string>('');
@@ -50,6 +54,12 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
   const [mealType, setMealType] = useState<'Lunch' | 'Dinner'>('Dinner');
   const [costType, setCostType] = useState<'Per Person' | 'Group Cost'>('Per Person');
 
+  // Hotel Filter States
+  const [starRating, setStarRating] = useState('All');
+  const [hotelType, setHotelType] = useState('All');
+  const [roomType, setRoomType] = useState('All');
+  const [filterMealType, setFilterMealType] = useState('All');
+
   if (!isOpen) return null;
 
   // Filter Data
@@ -57,7 +67,13 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
     const query = searchQuery.toLowerCase();
     switch (type) {
       case 'hotel':
-        return mockHotels.filter(h => h.name.toLowerCase().includes(query) || h.city.toLowerCase().includes(query));
+        return mockHotels.filter(h => {
+            const matchesName = h.name.toLowerCase().includes(query);
+            // In a real app, city filtering would be stricter, using includes for demo
+            const matchesCity = city ? h.city.toLowerCase().includes(city.toLowerCase()) : true; 
+            const matchesStar = starRating === 'All' || h.starRating === starRating;
+            return matchesName && matchesCity && matchesStar;
+        });
       case 'flight':
         return mockFlights.filter(f => f.name.toLowerCase().includes(query) || f.sector.toLowerCase().includes(query));
       case 'transport':
@@ -90,7 +106,7 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
     
     // Specific Mapping
     if (type === 'hotel') {
-       Object.assign(payload, { roomType: 'Standard', mealPlan: 'CP', checkIn: '14:00', checkOut: '11:00' });
+       Object.assign(payload, { roomType: selectedItem.roomType || 'Standard', mealPlan: selectedItem.mealPlan || 'CP', checkIn: '14:00', checkOut: '11:00' });
     }
     if (type === 'restaurant') {
        Object.assign(payload, { mealType: mealType });
@@ -105,6 +121,232 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
     onClose();
   };
 
+  const handleDirectAdd = (item: any) => {
+      // Direct add for Hotel table "Select" button
+      const payload: any = { ...item, cost: Number(item.cost) };
+      Object.assign(payload, { roomType: item.roomType || 'Standard', mealPlan: item.mealPlan || 'CP', checkIn: '14:00', checkOut: '11:00' });
+      onAdd(payload);
+      onClose();
+  };
+
+  const handleEditPriceClick = (item: any) => {
+      setSelectedItem(item);
+      setOverrideCost(item.cost);
+  };
+
+  // --- RENDER FOR HOTEL TYPE ---
+  if (type === 'hotel') {
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-white rounded-lg shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden font-sans">
+                {/* Header */}
+                <div className="flex justify-between items-center p-3 border-b border-slate-200 bg-white">
+                    <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                       Guest Hotel | {date || 'Date Not Set'} | Pax Type: FIT
+                    </h3>
+                    <button onClick={onClose} className="text-slate-400 hover:text-red-500">
+                        <X size={20} />
+                    </button>
+                </div>
+
+                {/* Filters */}
+                <div className="p-4 border-b border-slate-200 bg-slate-50 space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Select Destination</label>
+                            <select className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs bg-white focus:border-blue-500 outline-none">
+                                <option>Selected Destination</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Destination</label>
+                            <select className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs bg-white focus:border-blue-500 outline-none" defaultValue={city}>
+                                <option>{city || 'Select City'}</option>
+                                <option>Delhi</option>
+                                <option>Mumbai</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Star Rating</label>
+                            <select 
+                                value={starRating} 
+                                onChange={e => setStarRating(e.target.value)} 
+                                className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs bg-white focus:border-blue-500 outline-none"
+                            >
+                                <option>All</option>
+                                <option>3 Star</option>
+                                <option>4 Star</option>
+                                <option>5 Star</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Hotel Type</label>
+                            <select 
+                                value={hotelType} 
+                                onChange={e => setHotelType(e.target.value)}
+                                className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs bg-white focus:border-blue-500 outline-none"
+                            >
+                                <option>All</option>
+                                <option>Heritage</option>
+                                <option>Business</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Room Type</label>
+                            <select 
+                                value={roomType} 
+                                onChange={e => setRoomType(e.target.value)}
+                                className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs bg-white focus:border-blue-500 outline-none"
+                            >
+                                <option>All</option>
+                                <option>Deluxe</option>
+                                <option>Suite</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+                        <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">From</label>
+                            <select className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs bg-white focus:border-blue-500 outline-none">
+                                <option>Night 1 - {city}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">To</label>
+                            <select className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs bg-white focus:border-blue-500 outline-none">
+                                <option>Night 4 - {city}</option>
+                            </select>
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Hotel Name</label>
+                            <input 
+                                type="text" 
+                                placeholder="Search Hotel" 
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                                className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs focus:border-blue-500 outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Meal Type</label>
+                            <select 
+                                value={filterMealType}
+                                onChange={e => setFilterMealType(e.target.value)}
+                                className="w-full border border-slate-300 rounded px-2 py-1.5 text-xs bg-white focus:border-blue-500 outline-none"
+                            >
+                                <option>All</option>
+                                <option>CP</option>
+                                <option>MAP</option>
+                                <option>AP</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button className="w-full bg-slate-800 text-white px-4 py-1.5 rounded text-xs font-bold hover:bg-slate-900 flex items-center justify-center gap-2">
+                                <Search size={12} /> Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Results Header */}
+                <div className="flex justify-between items-center px-4 py-2 border-b border-slate-200 bg-white">
+                    <span className="text-sm text-slate-700">{results.length} Hotel Found</span>
+                    <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold flex items-center gap-1">
+                        <Plus size={12} /> Add New
+                    </button>
+                </div>
+
+                {/* Results Table */}
+                <div className="flex-1 overflow-auto bg-slate-50 p-4">
+                    <div className="bg-white border border-slate-300">
+                        <table className="w-full text-left text-xs border-collapse">
+                            <thead className="bg-slate-200 text-slate-700 font-bold sticky top-0 z-10">
+                                <tr>
+                                    <th className="p-2 border border-slate-300">Hotel</th>
+                                    <th className="p-2 border border-slate-300">Supplier</th>
+                                    <th className="p-2 border border-slate-300">Category/HotelType</th>
+                                    <th className="p-2 border border-slate-300">RoomType/Meal</th>
+                                    <th className="p-2 border border-slate-300 text-center">Tariff Type</th>
+                                    <th className="p-2 border border-slate-300 text-center">Rate Validate</th>
+                                    <th className="p-2 border border-slate-300 text-center w-40">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {results.map((hotel) => (
+                                    <tr key={hotel.id} className="hover:bg-blue-50">
+                                        <td className="p-2 border border-slate-300 font-medium text-slate-800">{hotel.name}</td>
+                                        <td className="p-2 border border-slate-300 text-slate-600 truncate max-w-[200px]" title={hotel.supplier}>{hotel.supplier || '-'}</td>
+                                        <td className="p-2 border border-slate-300 text-slate-600">{hotel.category}</td>
+                                        <td className="p-2 border border-slate-300 text-slate-600">
+                                            {hotel.roomType ? `${hotel.roomType}/${hotel.mealPlan}` : '-'}
+                                        </td>
+                                        <td className="p-2 border border-slate-300 text-center text-slate-600">{hotel.tariffType || '-'}</td>
+                                        <td className="p-2 border border-slate-300 text-center text-slate-600 text-[10px]">{hotel.rateValid || '-'}</td>
+                                        <td className="p-2 border border-slate-300">
+                                            <div className="flex flex-col gap-1">
+                                                {hotel.cost > 0 ? (
+                                                    <div className="flex gap-1">
+                                                        <button 
+                                                            onClick={() => handleDirectAdd(hotel)}
+                                                            className="flex-1 bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-[10px] font-bold flex items-center justify-center gap-1"
+                                                        >
+                                                            <Check size={10} /> Select
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => handleEditPriceClick(hotel)}
+                                                            className="flex-1 bg-teal-500 hover:bg-teal-600 text-white px-2 py-1 rounded text-[10px] font-bold flex items-center justify-center gap-1"
+                                                        >
+                                                            <Edit2 size={10} /> Edit Price
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <button className="w-full bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded text-[10px] font-bold flex items-center justify-center gap-1">
+                                                        <Plus size={10} /> Add Price
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                                {results.length === 0 && (
+                                    <tr>
+                                        <td colSpan={7} className="p-8 text-center text-slate-400">No hotels found.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* Edit Price Modal Overlay */}
+                {selectedItem && (
+                    <div className="absolute inset-0 bg-slate-900/50 flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-xl w-96 animate-in zoom-in-95">
+                            <h4 className="font-bold text-lg mb-4 text-slate-800">Confirm Hotel Price</h4>
+                            <p className="text-sm text-slate-600 mb-4">{selectedItem.name}</p>
+                            <div className="mb-4">
+                                <label className="block text-xs font-bold text-slate-500 mb-1">Cost</label>
+                                <input 
+                                    type="number" 
+                                    value={overrideCost} 
+                                    onChange={(e) => setOverrideCost(e.target.value)} 
+                                    className="w-full border border-slate-300 rounded px-3 py-2 outline-none focus:border-blue-500"
+                                />
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <button onClick={() => setSelectedItem(null)} className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded hover:bg-slate-50">Cancel</button>
+                                <button onClick={handleConfirmAdd} className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">Confirm & Add</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+      );
+  }
+
+  // --- RENDER FOR OTHER TYPES (Generic) ---
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[85vh]">
@@ -113,7 +355,6 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
         <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
           <div>
             <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2 capitalize">
-              {type === 'hotel' && <Building2 className="text-blue-500" size={20} />}
               {type === 'flight' && <Plane className="text-orange-500" size={20} />}
               {type === 'activity' && <Flag className="text-green-500" size={20} />}
               {type === 'transport' && <Bus className="text-orange-600" size={20} />}
@@ -169,7 +410,6 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
                     <div>
                        <h4 className="font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{item.name}</h4>
                        <div className="text-xs text-slate-500 flex gap-3 mt-1">
-                          {type === 'hotel' && <span>{item.type} • {item.city}</span>}
                           {type === 'flight' && <span>{item.sector} • {item.time}</span>}
                           {(type === 'activity' || type === 'transport') && <span>{item.type} • {item.duration}</span>}
                           {type === 'restaurant' && <span className="text-red-600 font-medium">{item.mealType} • {item.supplier}</span>}
@@ -261,4 +501,3 @@ const ServiceModals: React.FC<ServiceModalsProps> = ({ isOpen, onClose, type, ci
 };
 
 export default ServiceModals;
-    
