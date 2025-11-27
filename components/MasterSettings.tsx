@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Settings, Map, Bed, Car, CreditCard, ChevronRight, Globe, Shield, FileText, Flag, Plane, User, Plus, Search, Filter, ArrowLeft, X, Edit2, Trash2, MoreHorizontal, Check, Download, Upload, Eye, Image as ImageIcon, FileJson, History } from 'lucide-react';
+import { Settings, Map, Bed, Car, CreditCard, ChevronRight, Globe, Shield, FileText, Flag, Plane, User, Plus, Search, Filter, ArrowLeft, X, Edit2, Trash2, MoreHorizontal, Check, Download, Upload, Eye, Image as ImageIcon, FileJson, History, Palette, Percent } from 'lucide-react';
 
 // Configuration Data Interface
 interface MasterItem {
@@ -67,6 +67,16 @@ interface BusinessType {
   status: 'Active' | 'Inactive';
 }
 
+interface MarketType {
+  id: string;
+  name: string;
+  color: string;
+  isDefault: 'Yes' | 'No';
+  addedBy: string;
+  dateAdded: string;
+  status: 'Active' | 'Inactive';
+}
+
 interface Destination {
   id: string;
   serviceCode: string;
@@ -81,6 +91,22 @@ interface Destination {
   additionalInfo: string;
   createdBy: string;
   modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+interface Language {
+  id: string;
+  name: string;
+  value: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+interface Commission {
+  id: string;
+  name: string;
+  percentage: string;
   status: 'Active' | 'Inactive';
 }
 
@@ -116,9 +142,26 @@ const initialBusinessTypes: BusinessType[] = [
   { id: 'bt3', name: 'Corporate', isDefault: 'No', createdBy: 'System', modifiedBy: 'System', status: 'Active' },
 ];
 
+const initialMarketTypes: MarketType[] = [
+  { id: 'mt1', name: 'Domestic', color: '#3b82f6', isDefault: 'Yes', addedBy: 'Admin', dateAdded: '2024-01-15', status: 'Active' },
+  { id: 'mt2', name: 'International', color: '#ef4444', isDefault: 'No', addedBy: 'Admin', dateAdded: '2024-01-20', status: 'Active' },
+  { id: 'mt3', name: 'Inbound', color: '#10b981', isDefault: 'No', addedBy: 'System', dateAdded: '2024-02-10', status: 'Active' },
+];
+
 const initialDestinations: Destination[] = [
   { id: 'd1', serviceCode: 'DEST001', countryId: '1', countryName: 'India', name: 'Jaipur', airportCode: 'JAI', latitude: '26.9124', longitude: '75.7873', description: 'The Pink City of India.', weatherInfo: 'Hot summers, pleasant winters.', additionalInfo: 'Famous for palaces.', createdBy: 'Admin', modifiedBy: 'Admin', status: 'Active' },
   { id: 'd2', serviceCode: 'DEST002', countryId: '2', countryName: 'United States', name: 'New York', airportCode: 'JFK', latitude: '40.7128', longitude: '-74.0060', description: 'The city that never sleeps.', weatherInfo: 'Four distinct seasons.', additionalInfo: 'Statue of Liberty.', createdBy: 'System', modifiedBy: 'System', status: 'Active' },
+];
+
+const initialLanguages: Language[] = [
+  { id: 'l1', name: 'English', value: 'ENG', createdBy: 'Admin', modifiedBy: 'Admin', status: 'Active' },
+  { id: 'l2', name: 'Hindi', value: 'HIN', createdBy: 'System', modifiedBy: 'System', status: 'Active' },
+  { id: 'l3', name: 'French', value: 'FRE', createdBy: 'Admin', modifiedBy: 'Admin', status: 'Inactive' },
+];
+
+const initialCommissions: Commission[] = [
+  { id: 'com1', name: 'Standard Agent', percentage: '10', status: 'Active' },
+  { id: 'com2', name: 'Preferred Partner', percentage: '15', status: 'Active' },
 ];
 
 // Dynamic Configuration Data
@@ -137,7 +180,7 @@ const MASTER_CONFIG: MasterCategory[] = [
       { label: 'Destination Master', path: '/master/destination' },
       { label: 'Business Type Master', path: '/master/business-type' },
       { label: 'Language Master', path: '/master/language' },
-      { label: 'MarketType Master', path: '/master/market-type' },
+      { label: 'Market Type Master', path: '/master/market-type' },
       { label: 'Commission Master', path: '/master/commission' },
       { label: 'Division Master', path: '/master/division' },
       { label: 'Season Master', path: '/master/season' },
@@ -269,12 +312,33 @@ const MasterSettings: React.FC = () => {
   const [businessTypeStatusFilter, setBusinessTypeStatusFilter] = useState('All');
   const [newBusinessType, setNewBusinessType] = useState<Partial<BusinessType>>({ status: 'Active', isDefault: 'No' });
 
+  // Market Type Master State
+  const [marketTypes, setMarketTypes] = useState<MarketType[]>(initialMarketTypes);
+  const [showAddMarketTypeModal, setShowAddMarketTypeModal] = useState(false);
+  const [marketTypeSearch, setMarketTypeSearch] = useState('');
+  const [marketTypeStatusFilter, setMarketTypeStatusFilter] = useState('All');
+  const [newMarketType, setNewMarketType] = useState<Partial<MarketType>>({ status: 'Active', isDefault: 'No', color: '#3b82f6' });
+
   // Destination Master State
   const [destinations, setDestinations] = useState<Destination[]>(initialDestinations);
   const [showAddDestinationModal, setShowAddDestinationModal] = useState(false);
   const [destinationSearch, setDestinationSearch] = useState('');
   const [destinationStatusFilter, setDestinationStatusFilter] = useState('All');
   const [newDestination, setNewDestination] = useState<Partial<Destination>>({ status: 'Active', countryId: '' });
+
+  // Language Master State
+  const [languages, setLanguages] = useState<Language[]>(initialLanguages);
+  const [showAddLanguageModal, setShowAddLanguageModal] = useState(false);
+  const [languageSearch, setLanguageSearch] = useState('');
+  const [languageStatusFilter, setLanguageStatusFilter] = useState('All');
+  const [newLanguage, setNewLanguage] = useState<Partial<Language>>({ status: 'Active' });
+
+  // Commission Master State
+  const [commissions, setCommissions] = useState<Commission[]>(initialCommissions);
+  const [showAddCommissionModal, setShowAddCommissionModal] = useState(false);
+  const [commissionSearch, setCommissionSearch] = useState('');
+  const [commissionStatusFilter, setCommissionStatusFilter] = useState('All');
+  const [newCommission, setNewCommission] = useState<Partial<Commission>>({ status: 'Active' });
 
   // Navigation Logic
   const handleModuleClick = (path: string) => {
@@ -375,6 +439,30 @@ const MasterSettings: React.FC = () => {
     setShowAddBusinessTypeModal(false); setNewBusinessType({ status: 'Active', isDefault: 'No' });
   };
 
+  // --- Market Type Handlers ---
+  const handleEditMarketType = (mt: MarketType) => { setNewMarketType({ ...mt }); setShowAddMarketTypeModal(true); };
+  const handleDeleteMarketType = (id: string, e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    if (window.confirm('Delete market type?')) setMarketTypes(prev => prev.filter(mt => mt.id !== id));
+  };
+  const handleSaveMarketType = () => {
+    if (!newMarketType.name) return;
+    if (newMarketType.id) {
+      setMarketTypes(prev => prev.map(mt => mt.id === newMarketType.id ? { ...mt, ...newMarketType } as MarketType : mt));
+    } else {
+      setMarketTypes(prev => [...prev, { 
+        id: Math.random().toString(), 
+        name: newMarketType.name!, 
+        color: newMarketType.color || '#3b82f6',
+        isDefault: newMarketType.isDefault || 'No', 
+        status: newMarketType.status || 'Active', 
+        addedBy: 'Admin', 
+        dateAdded: new Date().toISOString().split('T')[0]
+      }]);
+    }
+    setShowAddMarketTypeModal(false); setNewMarketType({ status: 'Active', isDefault: 'No', color: '#3b82f6' });
+  };
+
   // --- Destination Master Handlers ---
   const handleEditDestination = (dest: Destination) => { setNewDestination({ ...dest }); setShowAddDestinationModal(true); };
   const handleDeleteDestination = (id: string, e: React.MouseEvent) => {
@@ -405,6 +493,52 @@ const MasterSettings: React.FC = () => {
       }]);
     }
     setShowAddDestinationModal(false); setNewDestination({ status: 'Active', countryId: '' });
+  };
+
+  // --- Language Master Handlers ---
+  const handleEditLanguage = (lang: Language) => { setNewLanguage({ ...lang }); setShowAddLanguageModal(true); };
+  const handleDeleteLanguage = (id: string, e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    if (window.confirm('Delete language?')) setLanguages(prev => prev.filter(l => l.id !== id));
+  };
+  const handleSaveLanguage = () => {
+    if (!newLanguage.name || !newLanguage.value) return;
+    if (newLanguage.id) {
+      setLanguages(prev => prev.map(l => l.id === newLanguage.id ? { ...l, ...newLanguage } as Language : l));
+    } else {
+      setLanguages(prev => [...prev, {
+        id: Math.random().toString(),
+        name: newLanguage.name!,
+        value: newLanguage.value!,
+        status: newLanguage.status || 'Active',
+        createdBy: 'Demo',
+        modifiedBy: 'Demo'
+      }]);
+    }
+    setShowAddLanguageModal(false);
+    setNewLanguage({ status: 'Active' });
+  };
+
+  // --- Commission Master Handlers ---
+  const handleEditCommission = (com: Commission) => { setNewCommission({ ...com }); setShowAddCommissionModal(true); };
+  const handleDeleteCommission = (id: string, e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    if (window.confirm('Delete commission?')) setCommissions(prev => prev.filter(c => c.id !== id));
+  };
+  const handleSaveCommission = () => {
+    if (!newCommission.name || !newCommission.percentage) return;
+    if (newCommission.id) {
+      setCommissions(prev => prev.map(c => c.id === newCommission.id ? { ...c, ...newCommission } as Commission : c));
+    } else {
+      setCommissions(prev => [...prev, {
+        id: Math.random().toString(),
+        name: newCommission.name!,
+        percentage: newCommission.percentage!,
+        status: newCommission.status || 'Active'
+      }]);
+    }
+    setShowAddCommissionModal(false);
+    setNewCommission({ status: 'Active' });
   };
 
 
@@ -492,6 +626,120 @@ const MasterSettings: React.FC = () => {
                     <div><label className="block text-xs font-semibold text-slate-500 mb-1">Status</label><select value={newBusinessType.status} onChange={(e) => setNewBusinessType({...newBusinessType, status: e.target.value as any})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
                  </div>
                  <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-center gap-3"><button onClick={handleSaveBusinessType} className="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm font-medium">Save</button><button onClick={() => setShowAddBusinessTypeModal(false)} className="px-8 py-2 bg-white border border-slate-300 text-slate-600 rounded-full text-sm font-medium hover:bg-slate-50">Cancel</button></div>
+              </div>
+           </div>
+        )}
+      </div>
+    );
+  }
+
+  // Market Type Master View
+  if (activeModule === '/master/market-type') {
+    const filteredMarketTypes = marketTypes.filter(mt => {
+      return (marketTypeStatusFilter === 'All' || mt.status === marketTypeStatusFilter) && mt.name.toLowerCase().includes(marketTypeSearch.toLowerCase());
+    });
+
+    return (
+      <div className="h-full flex flex-col animate-in fade-in slide-in-from-right-4 duration-300">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+          <div className="flex items-center gap-4">
+            <button onClick={handleBack} className="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-500"><ArrowLeft size={20} /></button>
+            <div><h2 className="text-2xl font-bold text-slate-800">Market Type Master</h2><p className="text-sm text-slate-500">Manage market categories</p></div>
+          </div>
+          <div className="flex items-center gap-3">
+             <button onClick={handleDownloadSample} className="bg-white border border-slate-300 text-slate-600 px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-slate-50 text-sm font-medium shadow-sm"><Download size={16}/> Sample</button>
+             <label className="bg-white border border-slate-300 text-slate-600 px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-slate-50 text-sm font-medium shadow-sm cursor-pointer"><Upload size={16}/> Import<input type="file" className="hidden" onChange={handleImport} accept=".csv,.xlsx"/></label>
+             <button onClick={() => { setNewMarketType({ status: 'Active', isDefault: 'No', color: '#3b82f6' }); setShowAddMarketTypeModal(true); }} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm text-sm font-medium"><Plus size={18} /> Add Market Type</button>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+           <div className="relative flex-1 w-full max-w-md">
+              <label className="absolute -top-2 left-2 px-1 bg-white text-[10px] font-semibold text-slate-500">Keyword</label>
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input type="text" value={marketTypeSearch} onChange={(e) => setMarketTypeSearch(e.target.value)} placeholder="Search Market Type" className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+           </div>
+           <div className="relative w-full md:w-48">
+              <label className="absolute -top-2 left-2 px-1 bg-white text-[10px] font-semibold text-slate-500">Select Status</label>
+              <select value={marketTypeStatusFilter} onChange={(e) => setMarketTypeStatusFilter(e.target.value)} className="w-full pl-3 pr-8 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                 <option value="All">All Status</option>
+                 <option value="Active">Active</option>
+                 <option value="Inactive">Inactive</option>
+              </select>
+           </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 flex-1 overflow-hidden flex flex-col">
+           <div className="overflow-x-auto flex-1">
+              <table className="w-full text-left">
+                 <thead className="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Sr.</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Market Name</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Color</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Added By</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Date Added</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
+                       <th className="px-6 py-3 text-right text-xs font-bold text-slate-500 uppercase">Action</th>
+                    </tr>
+                 </thead>
+                 <tbody className="divide-y divide-slate-100">
+                    {filteredMarketTypes.map((mt, index) => (
+                       <tr key={mt.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="px-6 py-4 text-sm text-slate-500">{index + 1}</td>
+                          <td className="px-6 py-4 font-medium text-slate-800">{mt.name}</td>
+                          <td className="px-6 py-4">
+                             <div className="w-16 h-4 rounded-full border border-slate-200" style={{ backgroundColor: mt.color }}></div>
+                          </td>
+                          <td className="px-6 py-4 text-xs text-slate-500">{mt.addedBy}</td>
+                          <td className="px-6 py-4 text-xs text-slate-500">{mt.dateAdded}</td>
+                          <td className="px-6 py-4"><span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${mt.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{mt.status}</span></td>
+                          <td className="px-6 py-4 text-right">
+                             <div className="flex items-center justify-end gap-2">
+                                <button onClick={() => handleEditMarketType(mt)} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded"><Edit2 size={16}/></button>
+                                <button onClick={(e) => handleDeleteMarketType(mt.id, e)} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded"><Trash2 size={16}/></button>
+                             </div>
+                          </td>
+                       </tr>
+                    ))}
+                 </tbody>
+              </table>
+           </div>
+        </div>
+
+        {showAddMarketTypeModal && (
+           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+                 <div className="bg-slate-800 px-6 py-4 flex justify-between items-center"><h3 className="text-lg font-bold text-white">{newMarketType.id ? 'Edit Market Type' : 'Add Market Type'}</h3><button onClick={() => setShowAddMarketTypeModal(false)} className="text-slate-400 hover:text-white"><X size={20} /></button></div>
+                 <div className="p-6 space-y-4">
+                    <div>
+                       <label className="block text-xs font-semibold text-slate-500 mb-1">Market Name</label>
+                       <input type="text" value={newMarketType.name || ''} onChange={(e) => setNewMarketType({...newMarketType, name: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                       <div className="h-0.5 w-8 bg-red-500 mt-1"></div>
+                    </div>
+                    <div>
+                       <label className="block text-xs font-semibold text-slate-500 mb-1">Select Color:</label>
+                       <div className="flex items-center gap-2">
+                          <input type="color" value={newMarketType.color} onChange={(e) => setNewMarketType({...newMarketType, color: e.target.value})} className="h-10 w-full p-1 border border-slate-300 rounded-lg cursor-pointer" />
+                          <div className="h-10 w-10 border border-slate-300 rounded-lg shrink-0" style={{ backgroundColor: newMarketType.color }}></div>
+                       </div>
+                    </div>
+                    <div>
+                       <label className="block text-xs font-semibold text-slate-500 mb-1">Set Default</label>
+                       <select value={newMarketType.isDefault} onChange={(e) => setNewMarketType({...newMarketType, isDefault: e.target.value as any})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                          <option value="No">No</option>
+                          <option value="Yes">Yes</option>
+                       </select>
+                    </div>
+                    <div>
+                       <label className="block text-xs font-semibold text-slate-500 mb-1">Status</label>
+                       <select value={newMarketType.status} onChange={(e) => setNewMarketType({...newMarketType, status: e.target.value as any})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                       </select>
+                    </div>
+                 </div>
+                 <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-center gap-3"><button onClick={handleSaveMarketType} className="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm font-medium">Save</button><button onClick={() => setShowAddMarketTypeModal(false)} className="px-8 py-2 bg-white border border-slate-300 text-slate-600 rounded-full text-sm font-medium hover:bg-slate-50">Cancel</button></div>
               </div>
            </div>
         )}
@@ -622,6 +870,195 @@ const MasterSettings: React.FC = () => {
                     <div><label className="block text-xs font-semibold text-slate-500 mb-1">Status</label><select value={newDestination.status} onChange={(e) => setNewDestination({...newDestination, status: e.target.value as any})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
                  </div>
                  <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-center gap-3"><button onClick={handleSaveDestination} className="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm font-medium">Save</button><button onClick={() => setShowAddDestinationModal(false)} className="px-8 py-2 bg-white border border-slate-300 text-slate-600 rounded-full text-sm font-medium hover:bg-slate-50">Cancel</button></div>
+              </div>
+           </div>
+        )}
+      </div>
+    );
+  }
+
+  // 7. Language Master View
+  if (activeModule === '/master/language') {
+    const filteredLanguages = languages.filter(l => {
+      return (languageStatusFilter === 'All' || l.status === languageStatusFilter) &&
+             (l.name.toLowerCase().includes(languageSearch.toLowerCase()) || l.value.toLowerCase().includes(languageSearch.toLowerCase()));
+    });
+
+    return (
+      <div className="h-full flex flex-col animate-in fade-in slide-in-from-right-4 duration-300">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+          <div className="flex items-center gap-4">
+            <button onClick={handleBack} className="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-500"><ArrowLeft size={20} /></button>
+            <div><h2 className="text-2xl font-bold text-slate-800">Language Master</h2><p className="text-sm text-slate-500">Manage supported languages</p></div>
+          </div>
+          <div className="flex items-center gap-3">
+             <button onClick={handleDownloadSample} className="bg-white border border-slate-300 text-slate-600 px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-slate-50 text-sm font-medium shadow-sm"><Download size={16}/> Sample</button>
+             <label className="bg-white border border-slate-300 text-slate-600 px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-slate-50 text-sm font-medium shadow-sm cursor-pointer"><Upload size={16}/> Import<input type="file" className="hidden" onChange={handleImport} accept=".csv,.xlsx"/></label>
+             <button onClick={() => { setNewLanguage({ status: 'Active' }); setShowAddLanguageModal(true); }} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm text-sm font-medium"><Plus size={18} /> Add Language</button>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+           <div className="relative flex-1 w-full max-w-md">
+              <label className="absolute -top-2 left-2 px-1 bg-white text-[10px] font-semibold text-slate-500">Keyword</label>
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input type="text" value={languageSearch} onChange={(e) => setLanguageSearch(e.target.value)} placeholder="Search Language" className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+           </div>
+           <div className="relative w-full md:w-48">
+              <label className="absolute -top-2 left-2 px-1 bg-white text-[10px] font-semibold text-slate-500">Select Status</label>
+              <select value={languageStatusFilter} onChange={(e) => setLanguageStatusFilter(e.target.value)} className="w-full pl-3 pr-8 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                 <option value="All">All Status</option>
+                 <option value="Active">Active</option>
+                 <option value="Inactive">Inactive</option>
+              </select>
+           </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 flex-1 overflow-hidden flex flex-col">
+           <div className="overflow-x-auto flex-1">
+              <table className="w-full text-left">
+                 <thead className="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Sr</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Language Value</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Language</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Created By</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Modified By</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
+                       <th className="px-6 py-3 text-right text-xs font-bold text-slate-500 uppercase">Action</th>
+                    </tr>
+                 </thead>
+                 <tbody className="divide-y divide-slate-100">
+                    {filteredLanguages.map((l, index) => (
+                       <tr key={l.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="px-6 py-4 text-sm text-slate-500">{index + 1}</td>
+                          <td className="px-6 py-4 font-mono text-sm text-slate-600">{l.value}</td>
+                          <td className="px-6 py-4 font-medium text-slate-800">{l.name}</td>
+                          <td className="px-6 py-4 text-xs text-slate-500">{l.createdBy}</td>
+                          <td className="px-6 py-4 text-xs text-slate-500">{l.modifiedBy}</td>
+                          <td className="px-6 py-4"><span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${l.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{l.status}</span></td>
+                          <td className="px-6 py-4 text-right">
+                             <div className="flex items-center justify-end gap-2">
+                                <button onClick={() => handleEditLanguage(l)} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded"><Edit2 size={16}/></button>
+                                <button onClick={(e) => handleDeleteLanguage(l.id, e)} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded"><Trash2 size={16}/></button>
+                             </div>
+                          </td>
+                       </tr>
+                    ))}
+                 </tbody>
+              </table>
+           </div>
+        </div>
+
+        {showAddLanguageModal && (
+           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+                 <div className="bg-slate-800 px-6 py-4 flex justify-between items-center"><h3 className="text-lg font-bold text-white">{newLanguage.id ? 'Edit Language' : 'Add Language'}</h3><button onClick={() => setShowAddLanguageModal(false)} className="text-slate-400 hover:text-white"><X size={20} /></button></div>
+                 <div className="p-6 space-y-4">
+                    <div><label className="block text-xs font-semibold text-slate-500 mb-1">Language Value (Code)</label><input type="text" value={newLanguage.value || ''} onChange={(e) => setNewLanguage({...newLanguage, value: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/><div className="h-0.5 w-8 bg-red-500 mt-1"></div></div>
+                    <div><label className="block text-xs font-semibold text-slate-500 mb-1">Language Name</label><input type="text" value={newLanguage.name || ''} onChange={(e) => setNewLanguage({...newLanguage, name: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/><div className="h-0.5 w-8 bg-red-500 mt-1"></div></div>
+                    <div><label className="block text-xs font-semibold text-slate-500 mb-1">Status</label><select value={newLanguage.status} onChange={(e) => setNewLanguage({...newLanguage, status: e.target.value as any})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+                 </div>
+                 <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-center gap-3"><button onClick={handleSaveLanguage} className="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm font-medium">Save</button><button onClick={() => setShowAddLanguageModal(false)} className="px-8 py-2 bg-white border border-slate-300 text-slate-600 rounded-full text-sm font-medium hover:bg-slate-50">Cancel</button></div>
+              </div>
+           </div>
+        )}
+      </div>
+    );
+  }
+
+  // 8. Commission Master View
+  if (activeModule === '/master/commission') {
+    const filteredCommissions = commissions.filter(c => {
+      return (commissionStatusFilter === 'All' || c.status === commissionStatusFilter) && c.name.toLowerCase().includes(commissionSearch.toLowerCase());
+    });
+
+    return (
+      <div className="h-full flex flex-col animate-in fade-in slide-in-from-right-4 duration-300">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+          <div className="flex items-center gap-4">
+            <button onClick={handleBack} className="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-500"><ArrowLeft size={20} /></button>
+            <div><h2 className="text-2xl font-bold text-slate-800">Commission Master</h2><p className="text-sm text-slate-500">Manage agent commission structures</p></div>
+          </div>
+          <div className="flex items-center gap-3">
+             <button onClick={handleDownloadSample} className="bg-white border border-slate-300 text-slate-600 px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-slate-50 text-sm font-medium shadow-sm"><Download size={16}/> Sample</button>
+             <label className="bg-white border border-slate-300 text-slate-600 px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-slate-50 text-sm font-medium shadow-sm cursor-pointer"><Upload size={16}/> Import<input type="file" className="hidden" onChange={handleImport} accept=".csv,.xlsx"/></label>
+             <button onClick={() => { setNewCommission({ status: 'Active' }); setShowAddCommissionModal(true); }} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm text-sm font-medium"><Plus size={18} /> Add Commission</button>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+           <div className="relative flex-1 w-full max-w-md">
+              <label className="absolute -top-2 left-2 px-1 bg-white text-[10px] font-semibold text-slate-500">Keyword</label>
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input type="text" value={commissionSearch} onChange={(e) => setCommissionSearch(e.target.value)} placeholder="Search Commission" className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+           </div>
+           <div className="relative w-full md:w-48">
+              <label className="absolute -top-2 left-2 px-1 bg-white text-[10px] font-semibold text-slate-500">Select Status</label>
+              <select value={commissionStatusFilter} onChange={(e) => setCommissionStatusFilter(e.target.value)} className="w-full pl-3 pr-8 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                 <option value="All">All Status</option>
+                 <option value="Active">Active</option>
+                 <option value="Inactive">Inactive</option>
+              </select>
+           </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 flex-1 overflow-hidden flex flex-col">
+           <div className="overflow-x-auto flex-1">
+              <table className="w-full text-left">
+                 <thead className="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">SN</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Commission Name</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Commission Percent(%)</th>
+                       <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
+                       <th className="px-6 py-3 text-right text-xs font-bold text-slate-500 uppercase">Action</th>
+                    </tr>
+                 </thead>
+                 <tbody className="divide-y divide-slate-100">
+                    {filteredCommissions.map((com, index) => (
+                       <tr key={com.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="px-6 py-4 text-sm text-slate-500">{index + 1}</td>
+                          <td className="px-6 py-4 font-medium text-slate-800">{com.name}</td>
+                          <td className="px-6 py-4 text-sm text-slate-600">{com.percentage}%</td>
+                          <td className="px-6 py-4"><span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${com.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{com.status}</span></td>
+                          <td className="px-6 py-4 text-right">
+                             <div className="flex items-center justify-end gap-2">
+                                <button onClick={() => handleEditCommission(com)} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded"><Edit2 size={16}/></button>
+                                <button onClick={(e) => handleDeleteCommission(com.id, e)} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded"><Trash2 size={16}/></button>
+                             </div>
+                          </td>
+                       </tr>
+                    ))}
+                 </tbody>
+              </table>
+           </div>
+        </div>
+
+        {showAddCommissionModal && (
+           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+                 <div className="bg-slate-800 px-6 py-4 flex justify-between items-center"><h3 className="text-lg font-bold text-white">{newCommission.id ? 'Edit Commission Master' : 'Add Commission Master'}</h3><button onClick={() => setShowAddCommissionModal(false)} className="text-slate-400 hover:text-white"><X size={20} /></button></div>
+                 <div className="p-6 space-y-4">
+                    <div>
+                       <label className="block text-xs font-semibold text-slate-500 mb-1">Commission Name</label>
+                       <input type="text" value={newCommission.name || ''} onChange={(e) => setNewCommission({...newCommission, name: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                       <div className="h-0.5 w-8 bg-red-500 mt-1"></div>
+                    </div>
+                    <div>
+                       <label className="block text-xs font-semibold text-slate-500 mb-1">Commission Percentage(%)</label>
+                       <input type="text" value={newCommission.percentage || ''} onChange={(e) => setNewCommission({...newCommission, percentage: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                       <div className="h-0.5 w-8 bg-red-500 mt-1"></div>
+                    </div>
+                    <div>
+                       <label className="block text-xs font-semibold text-slate-500 mb-1">status</label>
+                       <select value={newCommission.status} onChange={(e) => setNewCommission({...newCommission, status: e.target.value as any})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                       </select>
+                    </div>
+                 </div>
+                 <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-center gap-3"><button onClick={handleSaveCommission} className="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm font-medium">Save</button><button onClick={() => setShowAddCommissionModal(false)} className="px-8 py-2 bg-white border border-slate-300 text-slate-600 rounded-full text-sm font-medium hover:bg-slate-50">Cancel</button></div>
               </div>
            </div>
         )}
