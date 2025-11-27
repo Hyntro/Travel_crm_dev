@@ -435,3 +435,122 @@ export interface CityContent {
   description: string;
   language: string;
 }
+
+// MASTER SETTINGS MODELS
+export interface Country {
+  id: string;
+  name: string;
+  shortName: string;
+  code: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface State {
+  id: string;
+  name: string;
+  countryId: string;
+  countryName: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface City {
+  id: string;
+  name: string;
+  stateId: string;
+  stateName: string;
+  countryId: string;
+  countryName: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface LeadSource {
+  id: string;
+  name: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface BusinessType {
+  id: string;
+  name: string;
+  isDefault: 'Yes' | 'No';
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface MarketType {
+  id: string;
+  name: string;
+  color: string;
+  isDefault: 'Yes' | 'No';
+  addedBy: string;
+  dateAdded: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Destination {
+  id: string;
+  serviceCode: string;
+  countryId: string;
+  countryName: string;
+  name: string;
+  airportCode: string;
+  latitude: string;
+  longitude: string;
+  description: string;
+  weatherInfo: string;
+  additionalInfo: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Language {
+  id: string;
+  name: string;
+  value: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Commission {
+  id: string;
+  name: string;
+  percentage: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Division {
+  id: string;
+  division: string;
+  keyword: string;
+  name: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Season {
+  id: string;
+  name: string;
+  fromDate: string;
+  toDate: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface TourType {
+  id: string;
+  name: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
