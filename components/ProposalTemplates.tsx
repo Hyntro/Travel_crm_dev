@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Quotation, QuotationItineraryDay, CostSheet } from '../types';
 import { MapPin, Calendar, Check, X, Phone, Mail, Globe, Clock, Coffee, Bus, Hotel, Flag } from 'lucide-react';
@@ -15,140 +14,94 @@ const ProposalTemplates: React.FC<ProposalProps> = ({ theme, quotation, itinerar
   // Theme 1: Aspire (Visual, Modern)
   if (theme === 'Aspire') {
     return (
-      <div className="bg-white max-w-4xl mx-auto shadow-2xl print:shadow-none mb-10 overflow-hidden">
-        {/* Hero Section */}
-        <div className="relative h-64 md:h-80 bg-slate-900 text-white overflow-hidden">
-           <img 
-             src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=2070" 
-             alt="Destination" 
-             className="w-full h-full object-cover opacity-60"
-           />
-           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent flex flex-col justify-end p-8">
-              <span className="inline-block px-3 py-1 bg-blue-600 text-white text-xs font-bold uppercase tracking-wider mb-3 w-fit rounded">Travel Proposal</span>
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">Trip to {quotation.destination}</h1>
-              <p className="text-xl text-slate-200">Prepared for {quotation.clientName}</p>
+      <div className="bg-white max-w-4xl mx-auto shadow-2xl print:shadow-none mb-10 overflow-hidden font-sans">
+        {/* Header with Logo Area */}
+        <div className="text-center pt-12 pb-6">
+           <div className="border-2 border-slate-800 p-2 inline-block mb-6">
+              <h2 className="text-2xl font-serif font-bold text-slate-700 tracking-widest px-4 uppercase">Peirce & Leslie</h2>
            </div>
+           <h1 className="text-4xl font-serif text-slate-700 mb-2">Cost proposal for</h1>
+           <h2 className="text-3xl font-serif text-slate-800">{quotation.travelDate} {quotation.destination}</h2>
         </div>
 
-        <div className="p-8 print:p-0">
-           {/* Info Bar */}
-           <div className="flex flex-wrap gap-6 mb-12 pb-6 border-b border-slate-100 text-sm">
-              <div className="flex items-center gap-2 text-slate-600">
-                 <Calendar className="text-blue-500" size={18} />
-                 <div>
-                    <span className="block font-bold text-slate-800">Start Date</span>
-                    {quotation.travelDate}
-                 </div>
-              </div>
-              <div className="flex items-center gap-2 text-slate-600">
-                 <Clock className="text-blue-500" size={18} />
-                 <div>
-                    <span className="block font-bold text-slate-800">Duration</span>
-                    {itinerary.length} Days
-                 </div>
-              </div>
-              <div className="flex items-center gap-2 text-slate-600">
-                 <MapPin className="text-blue-500" size={18} />
-                 <div>
-                    <span className="block font-bold text-slate-800">Destination</span>
-                    {quotation.destination}
-                 </div>
-              </div>
-              <div className="flex-1 text-right">
-                 <span className="block text-xs text-slate-400 uppercase">Quote Ref</span>
-                 <span className="font-mono text-slate-800">{quotation.quoteCode}</span>
-              </div>
+        {/* Hero Image */}
+        <div className="px-12 pb-8 relative group">
+           <div className="h-80 w-full overflow-hidden rounded-sm relative">
+              <img 
+                src="https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&q=80&w=2000" 
+                alt="Proposal Cover" 
+                className="w-full h-full object-cover"
+              />
+              {/* Corner Decorations */}
+              <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-green-700/60 rounded-tl-xl"></div>
+              <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-green-700/60 rounded-br-xl"></div>
            </div>
-
-           {/* Itinerary Timeline */}
-           <div className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                 <span className="w-2 h-8 bg-blue-600 rounded-sm"></span> Your Itinerary
-              </h2>
-              <div className="space-y-8 relative before:absolute before:left-[19px] before:top-4 before:bottom-4 before:w-0.5 before:bg-slate-200">
-                 {itinerary.map((day) => (
-                    <div key={day.id} className="relative pl-12">
-                       <div className="absolute left-0 top-0 w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold z-10 border-4 border-white shadow-sm">
-                          {day.dayNumber}
-                       </div>
-                       <div className="bg-slate-50 rounded-xl p-6 border border-slate-100 hover:shadow-md transition-shadow">
-                          <div className="flex justify-between items-start mb-3">
-                             <div>
-                                <h3 className="text-lg font-bold text-slate-800">{day.cityName}</h3>
-                                <p className="text-sm text-blue-600 font-medium">{day.date}</p>
-                             </div>
-                             <div className="flex gap-2">
-                                {day.services.hotel && <Hotel size={16} className="text-slate-400" title="Hotel Included"/>}
-                                {day.services.transfer && <Bus size={16} className="text-slate-400" title="Transfer Included"/>}
-                                {day.services.guide && <Flag size={16} className="text-slate-400" title="Guide Included"/>}
-                             </div>
-                          </div>
-                          <p className="text-slate-600 leading-relaxed text-sm">{day.description}</p>
-                       </div>
-                    </div>
-                 ))}
-              </div>
-           </div>
-
-           {/* Inclusions / Exclusions */}
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              <div className="bg-green-50 p-6 rounded-xl border border-green-100">
-                 <h3 className="font-bold text-green-800 mb-4 flex items-center gap-2">
-                    <Check size={20} /> Inclusions
-                 </h3>
-                 <ul className="space-y-2">
-                    <li className="flex gap-2 text-sm text-green-900"><Check size={16} className="mt-0.5 shrink-0"/> Accommodation in selected hotels</li>
-                    <li className="flex gap-2 text-sm text-green-900"><Check size={16} className="mt-0.5 shrink-0"/> Daily Breakfast (MAP Plan)</li>
-                    <li className="flex gap-2 text-sm text-green-900"><Check size={16} className="mt-0.5 shrink-0"/> Private Airport Transfers</li>
-                    <li className="flex gap-2 text-sm text-green-900"><Check size={16} className="mt-0.5 shrink-0"/> Sightseeing as per itinerary</li>
-                 </ul>
-              </div>
-              <div className="bg-red-50 p-6 rounded-xl border border-red-100">
-                 <h3 className="font-bold text-red-800 mb-4 flex items-center gap-2">
-                    <X size={20} /> Exclusions
-                 </h3>
-                 <ul className="space-y-2">
-                    <li className="flex gap-2 text-sm text-red-900"><X size={16} className="mt-0.5 shrink-0"/> International Airfare</li>
-                    <li className="flex gap-2 text-sm text-red-900"><X size={16} className="mt-0.5 shrink-0"/> Visa Fees</li>
-                    <li className="flex gap-2 text-sm text-red-900"><X size={16} className="mt-0.5 shrink-0"/> Personal Expenses (Laundry, Calls)</li>
-                    <li className="flex gap-2 text-sm text-red-900"><X size={16} className="mt-0.5 shrink-0"/> Travel Insurance</li>
-                 </ul>
-              </div>
-           </div>
-
-           {/* Costing Section */}
-           <div className="bg-slate-900 text-white p-8 rounded-xl flex flex-col md:flex-row justify-between items-center mb-12">
-              <div>
-                 <h3 className="text-2xl font-bold mb-1">Total Package Cost</h3>
-                 <p className="text-slate-400 text-sm">Inclusive of all taxes & service charges</p>
-              </div>
-              <div className="text-right mt-4 md:mt-0">
-                 <span className="text-4xl font-bold text-blue-400">${costSheet.finalSalePrice.toLocaleString()}</span>
-                 <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider">Per Person</p>
-              </div>
-           </div>
-
-           {/* Terms */}
-           <div className="text-xs text-slate-500 border-t border-slate-100 pt-6">
-              <h4 className="font-bold text-slate-700 uppercase mb-2">Terms & Conditions</h4>
-              <p>Rates are subject to availability at the time of booking. 50% advance required to confirm booking. Cancellation policy applies as per hotel rules.</p>
-           </div>
+           <button className="absolute top-2 right-14 text-xs bg-white/80 px-2 py-1 border border-slate-300 text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">Change Image</button>
         </div>
 
-        {/* Footer */}
-        <div className="bg-slate-100 p-6 text-center text-slate-500 text-sm mt-auto print:hidden">
-           <div className="flex justify-center gap-6 mb-2">
-              <span className="flex items-center gap-1"><Phone size={14}/> +1 555 123 4567</span>
-              <span className="flex items-center gap-1"><Mail size={14}/> info@travelcrm.com</span>
-              <span className="flex items-center gap-1"><Globe size={14}/> www.travelcrm.com</span>
+        <div className="px-12 pb-12 print:px-8">
+           
+           {/* Validity & Destination */}
+           <div className="text-center mb-8 bg-blue-50/50 py-4 border-y border-blue-100">
+              <h3 className="text-xl font-serif font-bold text-slate-800">Validity : {quotation.travelDate}</h3>
+              <h4 className="text-lg font-serif font-bold text-slate-700 mt-1">{quotation.destination}</h4>
            </div>
-           <p>&copy; 2025 TravelCRM. All rights reserved.</p>
+
+           {/* Land Arrangements Header */}
+           <div className="bg-slate-800 text-white px-4 py-2 mb-1">
+              <h4 className="font-bold text-sm uppercase">LAND ARRANGEMENTS: Based on {quotation.paxAdult} pax traveling</h4>
+           </div>
+
+           {/* Cost Table */}
+           <div className="mb-8">
+              <div className="bg-slate-800 text-white px-4 py-2 text-center border-b border-slate-600">
+                 <h4 className="font-bold text-sm uppercase">COST OF LAND ARRANGEMENTS</h4>
+              </div>
+              <div className="border border-slate-300 flex">
+                 <div className="flex-1 p-3 text-sm text-slate-700 font-medium">Cost of land arrangements</div>
+                 <div className="w-1/3 border-l border-slate-300 p-3 text-sm font-bold text-slate-800">
+                    {/* Placeholder Logic for AED currency mock */}
+                    AED {(costSheet.finalSalePrice / 20).toFixed(2)} Per Pax X {quotation.paxAdult}
+                    <div className="text-blue-600">= Total AED {(costSheet.finalSalePrice * quotation.paxAdult / 20).toFixed(0)}</div>
+                 </div>
+              </div>
+           </div>
+
+           {/* Inclusions */}
+           <div className="mb-6">
+              <div className="bg-slate-800 text-white px-4 py-2 mb-4">
+                 <h4 className="font-bold text-sm uppercase">Inclusion</h4>
+              </div>
+              <ul className="list-disc pl-5 space-y-2 text-sm text-slate-700 leading-relaxed marker:text-slate-400">
+                 <li>Accommodation as per itinerary - Double room on twin sharing basis at all destinations. (We will offer choice to select hotel in 4 star category)</li>
+                 <li>Daily Breakfast at hotel.</li>
+                 <li>Private AC car for all transfers, sightseeing and drives.</li>
+                 <li>Assistance on arrival and departure.</li>
+                 <li>Monuments Entrance fees during sightseeing.</li>
+                 <li>Tour Guides.</li>
+                 <li>All the taxes included, no hidden charges.</li>
+              </ul>
+           </div>
+
+           {/* Exclusions */}
+           <div className="mb-6">
+              <div className="bg-slate-800 text-white px-4 py-2 mb-4">
+                 <h4 className="font-bold text-sm uppercase">Exclusion</h4>
+              </div>
+              <ul className="list-disc pl-5 space-y-2 text-sm text-slate-700 leading-relaxed marker:text-slate-400">
+                 <li>Air fare / train fare.</li>
+                 <li>Any other item not specified in the Package Inclusions.</li>
+                 <li>Gratuities.</li>
+                 <li>Lunch and Dinner.</li>
+              </ul>
+           </div>
+
         </div>
       </div>
     );
   }
 
-  // Theme 2: Simple (Clean, Text Heavy)
+  // Theme 2: Simple (Clean, Text Heavy) - Keeping as is or simplifying further if needed.
   return (
     <div className="bg-white max-w-4xl mx-auto p-12 shadow-2xl print:shadow-none print:p-0 mb-10 font-serif">
        <div className="text-center border-b-2 border-black pb-6 mb-8">

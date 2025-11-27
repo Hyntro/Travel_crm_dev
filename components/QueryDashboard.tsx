@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Search, Calendar, Filter, Plus, FileText, ArrowRight, Briefcase, Globe, User, Phone, Mail, Clock, Hotel, MapPin, Save, X, AlignLeft, Users, Bed, Layers } from 'lucide-react';
 import { TravelQuery, QueryStatus, QueryPriority } from '../types';
+import QueryDetail from './QueryDetail';
 
 // Mock Data
 const initialQueries: TravelQuery[] = [
@@ -35,8 +36,9 @@ const getStatusBadge = (status: QueryStatus) => {
 };
 
 const QueryDashboard: React.FC = () => {
-  const [view, setView] = useState<'list' | 'add'>('list');
+  const [view, setView] = useState<'list' | 'add' | 'detail'>('list');
   const [queries, setQueries] = useState<TravelQuery[]>(initialQueries);
+  const [selectedQuery, setSelectedQuery] = useState<TravelQuery | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -92,6 +94,15 @@ const QueryDashboard: React.FC = () => {
     setQueries([newQuery, ...queries]);
     setView('list');
   };
+
+  const handleQueryClick = (query: TravelQuery) => {
+    setSelectedQuery(query);
+    setView('detail');
+  };
+
+  if (view === 'detail' && selectedQuery) {
+    return <QueryDetail query={selectedQuery} onBack={() => { setView('list'); setSelectedQuery(null); }} />;
+  }
 
   if (view === 'add') {
     return (
@@ -559,9 +570,9 @@ const QueryDashboard: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {queries.map((q) => (
-                <tr key={q.id} className="hover:bg-slate-50 transition-colors">
+                <tr key={q.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => handleQueryClick(q)}>
                   <td className="px-6 py-4">
-                    <div className="font-mono text-xs font-semibold text-blue-600">{q.id}</div>
+                    <div className="font-mono text-xs font-semibold text-blue-600 group-hover:underline">{q.id}</div>
                     <div className="text-xs text-slate-400 mt-1">{q.createdAt}</div>
                   </td>
                   <td className="px-6 py-4">

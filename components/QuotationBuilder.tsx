@@ -1,14 +1,14 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { FileText, Map, Settings, MessageSquare, Plus, Trash2, Hotel, Flag, Bus, Plane, Train, MapPin, Copy, Eye, CheckCircle, Calendar, Bed, X, Edit, Users, ArrowRightLeft, RefreshCw, Printer, GripVertical, PackagePlus, Sparkles, Utensils } from 'lucide-react';
+import { FileText, Map, Settings, MessageSquare, Plus, Trash2, Hotel, Flag, Bus, Plane, Train, MapPin, Copy, Eye, CheckCircle, Calendar, Bed, X, Edit, Users, ArrowRightLeft, RefreshCw, Printer, GripVertical, PackagePlus, Sparkles, Utensils, ArrowLeft } from 'lucide-react';
 import { Quotation, QuotationItineraryDay, TourExtension, CostSheet, TravelPackage, CityContent } from '../types';
 import CostingSheet from './CostingSheet';
 import ProposalTemplates from './ProposalTemplates';
 import ServiceModals from './ServiceModals';
+import CostSheetPreview from './CostSheetPreview';
 import Sortable from 'sortablejs';
 
 // Mock Data
-const initialQuotation: Quotation = {
+const defaultQuotation: Quotation = {
   id: 'Q1',
   queryId: 'DB25-26/000785',
   quoteCode: 'DB25-26/000771/A',
@@ -72,8 +72,14 @@ const mockCityContent: CityContent[] = [
   { id: 'cc1', city: 'Tokyo', title: 'Tokyo Highlights', description: 'Explore the vibrant capital of Japan. Visit the historic Senso-ji Temple in Asakusa.', language: 'English' },
 ];
 
-const QuotationBuilder: React.FC = () => {
-  const [quotation, setQuotation] = useState<Quotation>(initialQuotation);
+interface QuotationBuilderProps {
+  embedded?: boolean;
+  initialData?: Quotation;
+  onBack?: () => void;
+}
+
+const QuotationBuilder: React.FC<QuotationBuilderProps> = ({ embedded = false, initialData, onBack }) => {
+  const [quotation, setQuotation] = useState<Quotation>(initialData || defaultQuotation);
   const [days, setDays] = useState<QuotationItineraryDay[]>(initialDays);
   const [activeTab, setActiveTab] = useState<'itinerary' | 'costing' | 'extensions'>('itinerary');
   const [costSheet, setCostSheet] = useState<CostSheet>(initialCostSheet);
@@ -87,9 +93,11 @@ const QuotationBuilder: React.FC = () => {
   const [showRouteModal, setShowRouteModal] = useState(false);
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showCostSheetPreview, setShowCostSheetPreview] = useState(false); // New state for CostSheet modal
   const [previewTheme, setPreviewTheme] = useState<'Aspire' | 'Simple'>('Aspire');
   const [tempPax, setTempPax] = useState({ adult: quotation.paxAdult, child: quotation.paxChild });
   const [tempDate, setTempDate] = useState(quotation.travelDate);
+  const [saveSuccess, setSaveSuccess] = useState(false); // Track save state
 
   // Service Modal State
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
@@ -99,6 +107,13 @@ const QuotationBuilder: React.FC = () => {
 
   const sortableListRef = useRef<HTMLDivElement>(null);
   const sortableInstance = useRef<Sortable | null>(null);
+
+  useEffect(() => {
+    if(initialData) {
+      setQuotation(initialData);
+      // In a real app, we would fetch the days and cost sheet for this ID here
+    }
+  }, [initialData]);
 
   useEffect(() => {
     if (showRouteModal && sortableListRef.current) {
@@ -290,7 +305,6 @@ const QuotationBuilder: React.FC = () => {
      setShowContentRepo(null);
   };
 
-  // ... (Amendment Handlers for Pax, Date, Route, Extension kept from previous)
   const handleAddExtension = () => {
     if (!newExt.title) return;
     setExtensions([...extensions, { ...newExt as TourExtension, id: Math.random().toString(), quotationId: quotation.id }]);
@@ -301,9 +315,19 @@ const QuotationBuilder: React.FC = () => {
   const handleSaveRoute = () => { /* Sortable logic */ setShowRouteModal(false); };
   const handleInsertPackage = (pkgId: string) => { /* Insert logic */ setShowPackageModal(false); };
 
+  // New Handler for Cost Save
+  const handleSaveCostSheet = (sheet: CostSheet) => {
+     setCostSheet(sheet);
+     setSaveSuccess(true);
+     // Simulate API save
+     setTimeout(() => setSaveSuccess(true), 500); 
+  };
+
   return (
-    <div className="p-8 h-full flex flex-col bg-slate-50 overflow-y-auto no-print">
-      {/* Header */}
+    <div className={`h-full flex flex-col bg-slate-50 overflow-y-auto no-print ${embedded ? '' : 'p-8'}`}>
+      
+      {/* Header - Hidden if embedded or customized for embedded */}
+      {!embedded ? (
       <div className="mb-8">
         <div className="flex justify-between items-start mb-6">
            <div>
@@ -326,9 +350,47 @@ const QuotationBuilder: React.FC = () => {
         </div>
         <div className="w-full bg-slate-200 rounded-full h-2.5 mb-1"><div className={`bg-blue-600 h-2.5 rounded-full transition-all duration-500`} style={{ width: `${getStatusStep() * 33.3}%` }}></div></div>
       </div>
+      ) : (
+         <div className="flex justify-between items-center p-4 bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
+            <div className="flex flex-col">
+               <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+                  <FileText size={18} className="text-blue-600"/> 
+                  {quotation.quoteCode || 'New Quotation'}
+               </h3>
+               <span className="text-xs text-slate-500">{quotation.clientName} | {quotation.travelDate}</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+               {saveSuccess && (
+                  <div className="flex items-center gap-2 mr-2 animate-in fade-in slide-in-from-right-2">
+                     <button 
+                        onClick={() => setShowCostSheetPreview(true)}
+                        className="bg-white border border-blue-200 text-blue-700 px-3 py-1.5 rounded-full text-sm font-medium hover:bg-blue-50 transition-colors shadow-sm"
+                     >
+                        Preview CostSheet
+                     </button>
+                     <button 
+                        onClick={() => setShowPreviewModal(true)}
+                        className="bg-white border border-blue-200 text-blue-700 px-3 py-1.5 rounded-full text-sm font-medium hover:bg-blue-50 transition-colors shadow-sm"
+                     >
+                        Preview Proposal
+                     </button>
+                     <span className="text-green-600 text-sm font-medium flex items-center gap-1">
+                        <CheckCircle size={16}/> Quotation is updated Successfully.
+                     </span>
+                  </div>
+               )}
+               {onBack && (
+                  <button onClick={onBack} className="text-slate-500 hover:text-slate-800 px-3 py-1.5 border border-slate-300 rounded-full text-sm flex items-center gap-1 bg-white hover:bg-slate-50">
+                     <ArrowLeft size={14}/> Back
+                  </button>
+               )}
+            </div>
+         </div>
+      )}
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 mb-6 bg-white rounded-t-xl px-2 pt-2 shadow-sm">
+      <div className="flex border-b border-slate-200 mb-6 bg-white px-2 pt-2 shadow-sm sticky top-[68px] z-10">
          <button onClick={() => setActiveTab('itinerary')} className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'itinerary' ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-slate-500'}`}><Map size={16}/> Day-wise Itinerary</button>
          <button onClick={() => setActiveTab('costing')} className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'costing' ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-slate-500'}`}><Settings size={16}/> Costing & Markup</button>
          <button onClick={() => setActiveTab('extensions')} className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'extensions' ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-slate-500'}`}><Plus size={16}/> Tour Extensions</button>
@@ -417,7 +479,7 @@ const QuotationBuilder: React.FC = () => {
             </div>
          )}
          
-         {activeTab === 'costing' && <CostingSheet initialCostSheet={costSheet} onSave={setCostSheet} />}
+         {activeTab === 'costing' && <CostingSheet initialCostSheet={costSheet} onSave={handleSaveCostSheet} />}
          
          {activeTab === 'extensions' && (
             <div>
@@ -452,6 +514,16 @@ const QuotationBuilder: React.FC = () => {
                  <div className="flex-1 overflow-y-auto p-4 md:p-8"><ProposalTemplates theme={previewTheme} quotation={quotation} itinerary={days} costSheet={costSheet}/></div>
              </div>
          </div>
+      )}
+
+      {/* Cost Sheet Preview Modal */}
+      {showCostSheetPreview && (
+         <CostSheetPreview 
+            quotation={quotation}
+            days={days}
+            costSheet={costSheet}
+            onClose={() => setShowCostSheetPreview(false)}
+         />
       )}
 
       <ServiceModals isOpen={serviceModalOpen} onClose={() => setServiceModalOpen(false)} type={activeServiceType} city={activeDayId ? days.find(d => d.id === activeDayId)?.cityName || '' : ''} onAdd={handleAddService}/>
