@@ -1,26 +1,49 @@
 
-export enum LeadStatus {
-  NEW = 'New',
-  CONTACTED = 'Contacted',
-  QUALIFIED = 'Qualified',
-  BOOKED = 'Booked',
-  LOST = 'Lost'
-}
-
-export interface Lead {
+export interface TransferMaster {
   id: string;
   name: string;
-  email: string;
-  phone: string;
-  status: LeadStatus;
-  notes: string;
-  budget?: number;
-  destination?: string;
-  aiInsight?: string;
-  sentiment?: 'Positive' | 'Neutral' | 'Negative';
-  createdAt: string;
+  destinationId: string;
+  destinationName: string;
+  transferType: string;
+  description: string;
+  internalNote: string;
+  status: 'Active' | 'Inactive';
 }
 
+export interface TransportationMaster {
+  id: string;
+  name: string;
+  destinationId: string;
+  destinationName: string;
+  transferType: string;
+  description: string;
+  internalNote: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface TransportationTariff {
+  id: string;
+  transportationId: string;
+  supplierName: string;
+  destination: string;
+  validFrom: string;
+  validTo: string;
+  type: string;
+  status: 'Active' | 'Inactive';
+  vehicleType: string;
+  taxSlab: string;
+  currency: string;
+  vehicleCost: number;
+  parkingFee: number;
+  representativeEntryFee: number;
+  assistance: number;
+  additionalAllowance: number;
+  interStateToll: number;
+  miscCost: number;
+  remarks: string;
+}
+
+// --- General & AI ---
 export interface ItineraryDay {
   day: number;
   title: string;
@@ -31,39 +54,77 @@ export interface ItineraryDay {
   }[];
 }
 
-export interface ItineraryRequest {
-  destination: string;
-  duration: number;
-  travelers: string;
-  interests: string;
-  budgetLevel: 'Budget' | 'Moderate' | 'Luxury';
+// --- Leads & CRM ---
+export enum LeadStatus {
+  NEW = 'New',
+  CONTACTED = 'Contacted',
+  QUALIFIED = 'Qualified',
 }
 
-// CRM Module Types
-
-export interface Department {
+export interface Lead {
   id: string;
-  name: string;
-}
-
-export interface Role {
-  id: string;
-  name: string;
-  parentId: string | null;
-  children?: Role[];
-}
-
-export interface User {
-  id: string;
-  code: string;
   name: string;
   email: string;
+  phone: string;
+  status: LeadStatus;
+  notes: string;
+  createdAt: string;
+  aiInsight?: string;
+  sentiment?: 'Positive' | 'Neutral' | 'Negative';
+  budget?: number;
+}
+
+export interface CRMLead {
+  id: string;
+  leadSource?: string;
+  clientCountry?: string;
+  businessType?: 'B2C' | 'Agent';
+  contactPerson: string;
+  email?: string;
+  mobile?: string;
+  fromDate?: string;
+  toDate?: string;
+  totalNights?: number;
+  paxAdult?: number;
+  paxChild?: number;
+  destination?: string;
+  rooms?: {
+    sgl: number;
+    dbl: number;
+    twin: number;
+    tpl: number;
+    extraBed: number;
+    cwBed: number;
+    cnBed: number;
+  };
+  salesPerson?: string;
+  opsPerson?: string;
+  budget?: number;
+  hotelCategory?: string;
+  stageId?: string;
+  potentialValue: number;
+  updatedAt?: string;
+}
+
+export interface SalesStage {
+  id: string;
+  name: string;
+  probability: number;
+  color: string;
+}
+
+// --- Users & Roles ---
+export interface User {
+  id: string;
+  code?: string;
+  name: string;
+  email: string;
+  mobile?: string;
   role: string;
-  department: string;
-  reportingManager: string | null;
+  department?: string;
+  reportingManager?: string;
   status: 'Active' | 'Inactive';
-  mobile: string;
-  avatar: string;
+  avatar?: string;
   address: {
     street: string;
     city: string;
@@ -73,55 +134,59 @@ export interface User {
   };
 }
 
-export type QueryStatus = 'New' | 'Contacted' | 'In Process' | 'Quotation Generated' | 'Confirmed' | 'Cancelled' | 'Lost';
-export type QueryPriority = 'Low' | 'High' | 'Urgent';
+export interface Role {
+  id: string;
+  name: string;
+  parentId: string | null;
+  children?: Role[];
+}
+
+// --- Travel Query ---
+export type QueryStatus = 'Confirmed' | 'Lost' | 'Quotation Generated' | 'In Process' | 'Contacted' | 'New';
+export type QueryPriority = 'High' | 'Low' | 'Urgent' | 'Normal';
 
 export interface TravelQuery {
   id: string;
   tourId: string;
-  type: 'Agent' | 'B2C';
+  type: string;
   clientName: string;
   clientEmail: string;
   clientPhone: string;
   pax: number;
   tourDate: string;
   destination: string;
-  queryType: 'Query' | 'Inbound' | 'FIT';
+  queryType: string;
   priority: QueryPriority;
   assignedTo: string;
   status: QueryStatus;
   createdAt: string;
 }
 
-// Phase 2 Models
-
+// --- Agents & Suppliers ---
 export interface Agent {
   id: string;
   code: string;
   companyName: string;
   businessType: string;
-  website?: string;
+  website: string;
   email: string;
   phone: string;
   assignedSales: string;
   assignedOps: string;
   status: 'Active' | 'Inactive';
   logo?: string;
-  
-  // Extended Fields
-  contactPerson?: string;
-  companyType?: string;
-  consortia?: string;
-  iso?: string;
-  competitor?: string;
-  marketType?: string;
-  department?: string;
   nationalityType?: string;
   nationalityName?: string;
   country?: string;
+  marketType?: string;
+  department?: string;
+  companyType?: string;
+  consortia?: string;
+  competitor?: string;
   category?: string;
-  tourType?: string;
   preferredLanguage?: string;
+  iso?: string;
+  tourType?: string;
   accountingCode?: string;
   localAgent?: boolean;
 }
@@ -136,163 +201,93 @@ export interface Supplier {
   services: string[];
   paymentTerms: 'Cash' | 'Credit';
   destination: string;
-  status?: 'Active' | 'Inactive';
+  status: 'Active' | 'Inactive';
 }
 
 export interface B2CClient {
   id: string;
-  // Personal Info
   title: string;
   firstName: string;
-  middleName?: string;
+  middleName: string;
   lastName: string;
-  name: string; // Composite for display
-  gender: 'Male' | 'Female' | 'Other';
+  name: string;
+  gender: string;
   dob: string;
   nationalityType: string;
   nationality: string;
-  anniversaryDate?: string;
-  accountingCode?: string;
-  
-  // Contact Info
+  anniversaryDate: string;
+  accountingCode: string;
   mobileCode: string;
   mobile: string;
   email: string;
-  emailType?: string;
-  
-  // Address Info
+  emailType: string;
   address: string;
   country: string;
   state: string;
   city: string;
   zipCode: string;
-  
-  // CRM & Preferences (Right Column)
   salesPerson: string;
   status: 'Active' | 'Inactive';
-  familyCode?: string;
-  familyRelation?: string;
-  
-  marketType?: string;
-  holidayPreference?: string;
-  covidVaccinated?: 'Yes' | 'No';
-  newsletter?: 'Yes' | 'No';
-  
+  familyCode: string;
+  familyRelation: string;
+  marketType: string;
+  holidayPreference: string;
+  covidVaccinated: string;
+  newsletter: string;
   preferences: {
     meal: string;
     seat: string;
     special: string;
-    accommodation?: string;
+    accommodation: string;
   };
-  
-  // Emergency Contact
   emergencyContact: {
     name: string;
     relation: string;
-    code?: string;
+    code: string;
     phone: string;
   };
-  
-  // Documents
-  passportNumber?: string;
-  visaNumber?: string;
-  documents: {
-    id: string;
-    type: string;
-    required: string;
-    number: string;
-    issueDate: string;
-    expiryDate: string;
-    issueCountry: string;
-    title: string;
-    file?: string;
-  }[];
-  
-  // Social Media
+  documents: { type: string; number: string }[];
   socialMedia: {
     facebook: string;
     twitter: string;
     linkedin: string;
     instagram: string;
   };
-  
   remarks: string[];
+  passportNumber?: string;
+  visaNumber?: string;
 }
 
+// --- Activity & Notifications ---
 export interface Notification {
   id: string;
   title: string;
   message: string;
   senderName: string;
-  senderAvatar?: string;
-  recipientId?: string | null;
   timestamp: string;
   type: 'System' | 'Message';
+  recipientId: string | null;
 }
 
-// Phase 3 Models
-
-export interface SalesStage {
-  id: string;
-  name: string;
-  probability: number;
-  color: string;
-}
-
-export interface CRMLead {
-  id: string;
-  leadSource: string;
-  clientCountry: string;
-  businessType: 'Agent' | 'B2C';
-  contactPerson: string;
-  email: string;
-  mobile: string;
-  fromDate: string;
-  toDate: string;
-  totalNights: number;
-  paxAdult: number;
-  paxChild: number;
-  destination: string;
-  rooms: {
-    sgl: number;
-    dbl: number;
-    twin: number;
-    tpl: number;
-    extraBed: number;
-    cwBed: number;
-    cnBed: number;
-  };
-  salesPerson: string;
-  opsPerson: string;
-  budget: number;
-  hotelCategory: '1 Star' | '2 Star' | '3 Star' | '4 Star' | '5 Star';
-  stageId: string;
-  potentialValue: number;
-  updatedAt: string;
-}
-
-export type ActivityType = 'Call' | 'Meeting' | 'Task';
+export type ActivityType = 'Task' | 'Meeting' | 'Call';
 
 export interface Activity {
   id: string;
   type: ActivityType;
-  leadId?: string;
   salesPerson: string;
   startDate: string;
   startTime: string;
   duration: string;
   nextFollowUp: string;
-  status: 'Scheduled' | 'Completed' | 'Overdue';
+  status: string;
   description: string;
-  callType?: 'Incoming' | 'Outgoing';
-  campaign?: string;
+  callType?: 'Outgoing' | 'Incoming';
+  priority?: string;
   location?: string;
   meetingOutcome?: string;
-  priority?: 'High' | 'Medium' | 'Low';
 }
 
-// Phase 4 Models
-
+// --- DMS ---
 export interface DMSFolder {
   id: string;
   name: string;
@@ -309,6 +304,7 @@ export interface DMSDocument {
   createdAt: string;
 }
 
+// --- Package & Costing ---
 export interface PackageItineraryItem {
   id: string;
   dayNumber: number;
@@ -320,33 +316,21 @@ export interface PackageItineraryItem {
 export interface PackageService {
   id: string;
   dayNumber: number;
-  type: 'Hotel' | 'Guide' | 'Activity' | 'Monument' | 'Transfer' | 'Flight' | 'Train' | 'Restaurant' | 'Other' | 'TPT' | 'Enroute' | 'Additional';
+  type: string;
   serviceName: string;
   supplierName: string;
   serviceType: string;
-  dayType: 'Full Day' | 'Half Day';
-  paxRange: string; 
-  paxSlab: string; 
+  dayType: string;
+  paxRange: string;
+  paxSlab: string;
   perDayCost: number;
   noOfDays: number;
   totalCost: number;
 }
 
 export interface PackageCosting {
-  markupType: 'Universal' | 'Service Wise';
-  markups: {
-    hotel: number;
-    guide: number;
-    tourEscort: number;
-    activity: number;
-    entrance: number;
-    enroute: number;
-    transfer: number;
-    train: number;
-    flight: number;
-    restaurant: number;
-    other: number;
-  };
+  markupType: string;
+  markups: { [key: string]: number };
   gstType: string;
   gstPercentage: number;
   currency: string;
@@ -357,176 +341,64 @@ export interface TravelPackage {
   id: string;
   code: string;
   name: string;
-  planType: 'Date Wise' | 'Day Wise';
+  planType: string;
   supplier: string;
   fromDate?: string;
   toDate?: string;
   totalNights: number;
   duration: string;
   destination: string;
-  paxType: 'GIT' | 'FIT';
+  paxType: string;
   status: 'Active' | 'Inactive';
-  description: string;
-  packageValidity?: string;
-  additionalInfo?: string;
+  description?: string;
+  creationDate?: string;
   itinerary?: PackageItineraryItem[];
   services?: PackageService[];
   costing?: PackageCosting;
-  creationDate?: string;
-}
-
-// New SubSeries Interface
-export interface SubSeries {
-  id: string;
-  name: string;
-  code: string;
-  tourCode: string;
-  startDate: string;
-  endDate: string;
-  totalDays: number;
-  adults: number;
-  child: number;
-  rooms: {
-    single: number;
-    double: number;
-    twin: number;
-    triple: number;
-  };
-  extraBeds: {
-    adult: number;
-    childWithBed: number;
-    childNoBed: number;
-  };
-  status: 'Confirmed' | 'Tentative';
-  active: boolean;
-  createdAt: string;
-}
-
-export interface SeriesMaster {
-  id: string;
-  code: string;
-  name: string;
-  clientType: 'Agent' | 'Direct';
-  clientName?: string;
-  destination?: string;
-  marketType: string;
-  tourType: string;
-  vehicle: string;
-  hotelCategory: string;
-  mealPlan: 'CP' | 'MAP' | 'AP';
-  year: number;
-  season: 'Summer' | 'Winter';
-  status: 'Active' | 'Inactive' | 'Completed';
-  departures: { date: string; seats: number; booked: number }[];
-  
-  // Extended fields for form
-  nationality?: string;
-  planType?: 'Day Wise' | 'Date Wise';
-  totalNights?: number;
-  operationPerson?: string;
-  salesPerson?: string;
   additionalInfo?: string;
-  description?: string;
-  itinerary?: { day: number; destination: string }[];
-  
-  // New Sub Series List
-  subSeries?: SubSeries[];
 }
 
-export interface Invoice {
+export interface CostSheet {
   id: string;
-  date: string;
-  queryId: string;
-  tourId?: string;
-  clientName: string;
-  companyName: string;
-  amount: number;
-  currency: string;
-  status: 'Paid' | 'Unpaid' | 'Cancelled';
-  invoiceFormat?: string;
-  invoiceType?: string;
+  quotationId: string;
+  hotelCost: number;
+  transportCost: number;
+  flightCost: number;
+  guideCost: number;
+  activityCost: number;
+  monumentCost: number;
+  mealCost: number;
+  miscCost: number;
+  escortCost: number;
+  enrouteCost: number;
+  permitCost: number;
+  markupPercentage: number;
+  agentCommission: number;
+  isoCommission: number;
+  gstType: 'IGST' | 'CGST/SGST';
+  gstPercentage: number;
+  totalLandCost: number;
+  markupAmount: number;
+  isoAmount: number;
+  gstAmount: number;
+  totalCost: number;
+  finalSalePrice: number;
 }
-
-// Phase 5 Models
 
 export interface Quotation {
   id: string;
   queryId: string;
   quoteCode: string;
   version: string;
-  status: 'Draft' | 'Final' | 'Confirmed';
-  hotelCategory: 'Standard' | 'Deluxe' | 'Luxury';
-  mealPlan: 'CP' | 'MAP' | 'AP';
+  status: string;
+  hotelCategory: string;
+  mealPlan: string;
   clientName: string;
   destination: string;
   updatedAt: string;
   paxAdult: number;
   paxChild: number;
   travelDate: string;
-}
-
-// Module 26: Detailed Service Models
-export interface ItineraryHotel {
-  id: string;
-  hotelName: string;
-  roomType: string;
-  mealPlan: 'CP' | 'MAP' | 'AP';
-  checkIn: string;
-  checkOut: string;
-  cost: number;
-  supplier: string;
-  overrideCost?: number;
-}
-
-export interface ItineraryTransport {
-  id: string;
-  vehicleType: string;
-  sector: string;
-  disposal: boolean;
-  cost: number;
-  overrideCost?: number;
-}
-
-export interface ItineraryFlight {
-  id: string;
-  carrierName: string;
-  flightNumber: string;
-  departureTime: string;
-  arrivalTime: string;
-  class: 'Economy' | 'Business';
-  pnr?: string;
-  cost: number;
-  overrideCost?: number;
-}
-
-export interface ItineraryActivity {
-  id: string;
-  serviceName: string;
-  timeSlot: string;
-  duration: string;
-  cost: number;
-  overrideCost?: number;
-  type: 'Activity' | 'Monument' | 'Guide' | 'Transfer';
-}
-
-// New Module 26 Extensions
-export interface ItineraryRestaurant {
-  id: string;
-  restaurantName: string;
-  mealType: 'Lunch' | 'Dinner';
-  supplier: string;
-  cost: number; // Adult Cost basis
-  overrideCost?: number;
-}
-
-export interface ItineraryAdditional {
-  id: string;
-  serviceName: string;
-  type: string;
-  supplier: string;
-  cost: number;
-  overrideCost?: number;
-  costType: 'Per Person' | 'Group Cost';
 }
 
 export interface QuotationItineraryDay {
@@ -544,79 +416,92 @@ export interface QuotationItineraryDay {
     flight: boolean;
     train: boolean;
   };
-  itineraryHotels: ItineraryHotel[];
-  itineraryTransports: ItineraryTransport[];
-  itineraryFlights: ItineraryFlight[];
-  itineraryActivities: ItineraryActivity[];
-  itineraryRestaurants: ItineraryRestaurant[];
-  itineraryAdditionals: ItineraryAdditional[];
-}
-
-export interface CostSheet {
-  id: string;
-  quotationId: string;
-  
-  // Granular Costs
-  hotelCost: number;
-  transportCost: number;
-  flightCost: number; // New
-  guideCost: number;
-  activityCost: number;
-  monumentCost: number;
-  mealCost: number; // New
-  miscCost: number; // New
-  escortCost: number;
-  enrouteCost: number;
-  permitCost: number;
-
-  // Markups & Comm
-  markupPercentage: number;
-  agentCommission: number;
-  isoCommission: number;
-  
-  gstType: 'IGST' | 'CGST/SGST';
-  gstPercentage: number;
-  
-  // Calculated
-  totalLandCost: number;
-  markupAmount: number;
-  isoAmount: number;
-  gstAmount: number;
-  totalCost: number;
-  finalSalePrice: number;
+  itineraryHotels: any[];
+  itineraryTransports: any[];
+  itineraryFlights: any[];
+  itineraryActivities: any[];
+  itineraryRestaurants: any[];
+  itineraryAdditionals: any[];
 }
 
 export interface TourExtension {
   id: string;
-  quotationId: string;
-  type: 'Pre-Tour' | 'Post-Tour';
-  title: string;
-  startDate: string;
-  nights: number;
-  rooms: {
-    sgl: number;
-    dbl: number;
-    tpl: number;
-  };
+  name: string;
 }
 
 export interface CityContent {
   id: string;
-  city: string;
-  title: string;
-  description: string;
-  language: string;
+  name: string;
 }
 
-// MASTER SETTINGS MODELS
+// --- Series ---
+export interface SubSeries {
+  id: string;
+  name: string;
+  code: string;
+  tourCode: string;
+  startDate: string;
+  endDate: string;
+  totalDays: number;
+  adults: number;
+  child: number;
+  rooms: { single: number; double: number; twin: number; triple: number };
+  extraBeds: { adult: number; childWithBed: number; childNoBed: number };
+  status: string;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface SeriesMaster {
+  id: string;
+  code: string;
+  name: string;
+  clientType: string;
+  clientName?: string;
+  destination: string;
+  marketType: string;
+  nationality: string;
+  planType: string;
+  tourType: string;
+  vehicle: string;
+  hotelCategory: string;
+  mealPlan: string;
+  year: number;
+  season: string;
+  status: 'Active' | 'Inactive';
+  totalNights: number;
+  operationPerson: string;
+  salesPerson: string;
+  departures: { date: string; seats: number; booked: number }[];
+  subSeries?: SubSeries[];
+  itinerary?: { day: number; destination: string }[];
+  additionalInfo?: string;
+  description?: string;
+}
+
+export interface Invoice {
+  id: string;
+  date: string;
+  queryId: string;
+  tourId?: string;
+  clientName: string;
+  companyName: string;
+  amount: number;
+  currency: string;
+  status: 'Paid' | 'Unpaid' | 'Cancelled';
+  invoiceFormat?: string;
+  invoiceType?: string;
+}
+
+// --- Masters: Location & General ---
 export interface Country {
   id: string;
   name: string;
   shortName: string;
   code: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface State {
@@ -624,9 +509,9 @@ export interface State {
   name: string;
   countryId: string;
   countryName: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface City {
@@ -636,68 +521,68 @@ export interface City {
   stateName: string;
   countryId: string;
   countryName: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface LeadSource {
   id: string;
   name: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface BusinessType {
   id: string;
   name: string;
-  isDefault: 'Yes' | 'No';
+  isDefault: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface MarketType {
   id: string;
   name: string;
   color: string;
-  isDefault: 'Yes' | 'No';
+  isDefault: string;
+  status: 'Active' | 'Inactive';
   addedBy: string;
   dateAdded: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface Destination {
   id: string;
   serviceCode: string;
+  name: string;
   countryId: string;
   countryName: string;
-  name: string;
-  airportCode: string;
-  latitude: string;
-  longitude: string;
-  description: string;
-  weatherInfo: string;
-  additionalInfo: string;
+  airportCode?: string;
+  latitude?: string;
+  longitude?: string;
+  description?: string;
+  weatherInfo?: string;
+  additionalInfo?: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface Language {
   id: string;
   name: string;
   value: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface Commission {
   id: string;
   name: string;
-  percentage: string;
+  percentage: number;
   status: 'Active' | 'Inactive';
 }
 
@@ -706,9 +591,9 @@ export interface Division {
   division: string;
   keyword: string;
   name: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface Season {
@@ -722,28 +607,28 @@ export interface Season {
 export interface TourType {
   id: string;
   name: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface RoomType {
   id: string;
   name: string;
   info: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface Amenity {
   id: string;
   name: string;
-  image?: string;
-  isDefault?: boolean;
+  image: string;
+  isDefault: boolean;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface HotelCategory {
@@ -751,19 +636,19 @@ export interface HotelCategory {
   categoryName: string;
   starCategory: string;
   keyword: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface HotelType {
   id: string;
   name: string;
   keyword: string;
-  isHouseBoat: 'Yes' | 'No';
+  isHouseBoat: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface HotelMealPlan {
@@ -771,9 +656,9 @@ export interface HotelMealPlan {
   name: string;
   voucherName: string;
   isDefault: boolean;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface Weekend {
@@ -783,6 +668,7 @@ export interface Weekend {
   status: 'Active' | 'Inactive';
 }
 
+// --- Masters: Hotel Details ---
 export interface HotelContact {
   id: string;
   title: string;
@@ -800,8 +686,8 @@ export interface HotelContact {
 
 export interface HotelMaster {
   id: string;
-  chain: string;
   name: string;
+  chain: string;
   destination: string;
   category: string;
   type: string;
@@ -810,14 +696,9 @@ export interface HotelMaster {
   weekendDays: string;
   checkInTime: string;
   checkOutTime: string;
-  status: 'Active' | 'Inactive';
-  
-  // Arrays for Multi-selects
   amenities: string[];
   roomTypes: string[];
-  
-  // Location/Billing
-  selfSupplier: 'Yes' | 'No';
+  selfSupplier: string;
   country: string;
   state: string;
   city: string;
@@ -825,25 +706,15 @@ export interface HotelMaster {
   phone: string;
   address: string;
   gstn: string;
-  
-  // Dynamic
+  status: 'Active' | 'Inactive';
   contacts: HotelContact[];
-  
-  // Content
-  description: string;
-  policy: string;
-  terms: string;
-  images: { id: string; url: string; name: string }[];
-  verified: 'Yes' | 'No';
-  internalNote: string;
-  
-  // Operation Restriction Fields (Extension)
-  restrictionFrom?: string;
-  restrictionTo?: string;
-  restrictionReason?: string;
+  description?: string;
+  policy?: string;
+  terms?: string;
+  verified?: 'Yes' | 'No';
+  internalNote?: string;
 }
 
-// Tariff Model
 export interface HotelTariff {
   id: string;
   hotelId: string;
@@ -879,7 +750,7 @@ export interface HotelTariff {
     lunchChild: number;
     dinnerChild: number;
   };
-  remarks: string;
+  remarks?: string;
 }
 
 export interface HotelChainContact {
@@ -897,13 +768,13 @@ export interface HotelChainContact {
 export interface HotelChain {
   id: string;
   name: string;
-  destinations: string; 
-  website: string;
-  contacts: HotelChainContact[];
+  destinations?: string;
+  website?: string;
   location: string;
+  contacts: HotelChainContact[];
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
 export interface HotelRestriction {
@@ -914,53 +785,55 @@ export interface HotelRestriction {
   reason: string;
 }
 
+export interface RestaurantContact {
+  title: string;
+  name: string;
+  designation: string;
+  countryCode: string;
+  phone1: string;
+  email: string;
+  secondaryEmail?: string;
+  phone2?: string;
+  phone3?: string;
+}
+
 export interface Restaurant {
   id: string;
   name: string;
   destination: string;
   address: string;
-  country: string;
-  state: string;
-  city: string;
-  pinCode: string;
-  gstn: string;
-  supplier: 'Yes' | 'No';
+  country?: string;
+  state?: string;
+  city?: string;
+  supplier?: string;
+  pinCode?: string;
+  gstn?: string;
   status: 'Active' | 'Inactive';
+  contact: RestaurantContact;
   image?: string;
-  contact: {
-    title: string;
-    name: string;
-    designation: string;
-    countryCode: string;
-    phone1: string;
-    phone2?: string;
-    phone3?: string;
-    email: string;
-    secondaryEmail?: string;
-  }
 }
 
 export interface RestaurantMealPlan {
   id: string;
   name: string;
+  status: 'Active' | 'Inactive';
   createdBy: string;
   modifiedBy: string;
-  status: 'Active' | 'Inactive';
 }
 
+// --- Masters: Activities & Monuments ---
 export interface Monument {
   id: string;
   serviceCode: string;
   name: string;
   destinationId: string;
   destinationName: string;
-  description: string;
-  closedDays: string;
-  isDefault: 'Yes' | 'No';
-  showInProposal: 'Yes' | 'No';
+  languages?: string;
+  closedDays?: string;
+  isDefault?: string;
+  showInProposal?: string;
+  description?: string;
   status: 'Active' | 'Inactive';
-  languages: string;
-  gallery?: string;
 }
 
 export interface MonumentTariff {
@@ -978,4 +851,295 @@ export interface MonumentTariff {
   policy: string;
   terms: string;
   remarks: string;
+}
+
+export interface SightseeingActivity {
+  id: string;
+  name: string;
+  destinationId: string;
+}
+
+export interface MonumentPackageService {
+  id: string;
+  serviceId: string;
+  serviceType: string;
+  serviceName: string;
+  serviceCity: string;
+}
+
+export interface MonumentPackage {
+  id: string;
+  name: string;
+  destinationId: string;
+  destinationName: string;
+  serviceType: string;
+  services: MonumentPackageService[];
+  description?: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface ActivityMaster {
+  id: string;
+  serviceCode: string;
+  name: string;
+  type: string;
+  destinationId: string;
+  destinationName: string;
+  supplierName: string;
+  isDefault: string;
+  status: 'Active' | 'Inactive';
+  language?: string;
+  closedDays?: string;
+  weekendDays?: string;
+  weekendDayText?: string;
+  description?: string;
+}
+
+export interface ActivityTariff {
+  id: string;
+  activityId: string;
+  supplierName: string;
+  validFrom: string;
+  validTo: string;
+  currency: string;
+  serviceName: string;
+  fromPax: number;
+  toPax: number;
+  costType: string;
+  perPaxCost: number;
+  status: 'Active' | 'Inactive';
+  taxSlab: string;
+  remarks: string;
+}
+
+export interface Enroute {
+  id: string;
+  serviceCode: string;
+  name: string;
+  supplierName: string;
+  gstSlab: string;
+  currency: string;
+  cost?: number;
+  isDefault: string;
+  destinationId: string;
+  destinationName: string;
+  status: 'Active' | 'Inactive';
+  description?: string;
+  language?: string;
+}
+
+export interface TransferType {
+  id: string;
+  name: string;
+  status: 'Active' | 'Inactive';
+  createdBy: string;
+  modifiedBy: string;
+}
+
+export interface CityDistance {
+  id: string;
+  fromDestinationId: string;
+  fromDestinationName: string;
+  toDestinations: { destinationId: string; destinationName: string; km: number }[];
+  status: 'Active' | 'Inactive';
+}
+
+export interface VehicleType {
+  id: string;
+  name: string;
+  capacity: string;
+  image?: string;
+  status: 'Active' | 'Inactive';
+  createdBy: string;
+  modifiedBy: string;
+  description?: string;
+}
+
+export interface Driver {
+  id: string;
+  name: string;
+  dob: string;
+  licenseNumber: string;
+  validUpto: string;
+  mobile: string;
+  altMobile?: string;
+  whatsapp?: string;
+  email?: string;
+  address?: string;
+  vehicleType?: string; 
+  registrationNumber?: string;
+  status: 'Active' | 'Inactive';
+  image?: string;
+  licenseImage?: string;
+}
+
+export interface Fleet {
+  id: string;
+  vehicleType: string;
+  brandName: string;
+  registrationNumber: string;
+  ownerName: string;
+  chassisNumber?: string;
+  engineNumber?: string;
+  colour?: string;
+  fuelType: string;
+  seatingCapacity?: string;
+  assignedDriver?: string; // Assigned Driver Name
+  insuranceCompany?: string;
+  insurancePolicy?: string;
+  insuranceIssueDate?: string;
+  insuranceDueDate?: string;
+  premiumAmount?: number;
+  coverAmount?: number;
+  taxEfficiency?: string; 
+  taxExpiry?: string;
+  permitType?: string; 
+  permitExpiry?: string;
+  rtoAddress?: string;
+  status: 'Active' | 'Inactive';
+  image?: string;
+  showOnCostSheet?: boolean;
+}
+
+export interface Airline {
+  id: string;
+  name: string;
+  image?: string;
+  status: 'Active' | 'Inactive';
+  createdBy?: string;
+  modifiedBy?: string;
+}
+
+export interface FlightSeatClass {
+  id: string;
+  name: string;
+  status: 'Active' | 'Inactive';
+  createdBy: string;
+  modifiedBy: string;
+}
+
+export interface FlightMaster {
+  id: string;
+  airlineId: string;
+  airlineName: string;
+  flightNumber: string;
+  fromDestinationId: string;
+  fromDestinationName: string;
+  toDestinationId: string;
+  toDestinationName: string;
+  departureTime: string;
+  arrivalTime: string;
+  daysOfOperation: string;
+  viaDestinationId?: string;
+  viaDestinationName?: string;
+  departureTerminal?: string;
+  arrivalTerminal?: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface FlightTariff {
+  id: string;
+  flightId: string;
+  supplierName: string;
+  cabinClass: string;
+  validFrom: string;
+  validTo: string;
+  currency: string;
+  roe: number;
+  adultBaseFare: number;
+  adultTax: number;
+  childBaseFare: number;
+  childTax: number;
+  baggageAllowance: string;
+  taxSlab: string;
+}
+
+export interface TrainMaster {
+  id: string;
+  name: string;
+  number: string;
+  fromDestinationId: string;
+  fromDestinationName: string;
+  toDestinationId: string;
+  toDestinationName: string;
+  daysOfOperation: string;
+  cancellationPolicy: string;
+  remarks: string;
+  image?: string;
+  status: 'Active' | 'Inactive';
+  departureTime?: string;
+  arrivalTime?: string;
+}
+
+export interface TrainTariff {
+  id: string;
+  trainId: string;
+  supplierName: string;
+  journeyType: string;
+  trainCoach: string;
+  fromStation: string;
+  toStation: string;
+  validFrom: string;
+  validTo: string;
+  currency: string;
+  roe: number;
+  adultCost: number;
+  childCost: number;
+  taxSlab: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Guide {
+  id: string;
+  name: string;
+  serviceType: 'Guide' | 'Porter' | 'Tour Escort' | 'Tour Manager';
+  dob?: string;
+  image?: string;
+  mobile: string;
+  whatsapp?: string;
+  alternateNumber?: string;
+  email: string;
+  licenseNumber?: string;
+  licenseIssueDate?: string;
+  licenseExpiryDate?: string;
+  licenseImage?: string;
+  idProofNumber?: string;
+  idProofIssueDate?: string;
+  idProofExpiryDate?: string;
+  idProofImage?: string;
+  destinationId?: string;
+  destinationName?: string;
+  languages?: string;
+  designation?: string;
+  address?: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  pinCode?: string;
+  panNo?: string;
+  gstNo?: string;
+  rating?: string;
+  vaccinationStatus?: 'Yes' | 'No';
+  status: 'Active' | 'Inactive';
+  selfSupplier?: 'Yes' | 'No';
+  isDefault?: 'Yes' | 'No';
+  remarks?: string;
+  feedback?: string;
+}
+
+export interface GuideTariff {
+  id: string;
+  guideId: string;
+  supplierName: string;
+  validFrom: string;
+  validTo: string;
+  paxRange: string;
+  dayType: 'Half Day' | 'Full Day';
+  universalCost: 'Yes' | 'No';
+  currency: string;
+  serviceCost: number;
+  languageAllowance: number;
+  otherCost: number;
+  gstSlab: string;
+  status: 'Active' | 'Inactive';
 }

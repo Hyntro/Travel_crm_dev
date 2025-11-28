@@ -25,6 +25,22 @@ import HotelOperationRestriction from './HotelOperationRestriction';
 import RestaurantMaster from './RestaurantMaster';
 import RestaurantMealPlanMaster from './RestaurantMealPlanMaster';
 import MonumentMaster from './MonumentMaster';
+import MonumentActivityPackageMaster from './MonumentActivityPackageMaster';
+import ActivityMaster from './ActivityMaster';
+import EnrouteMaster from './EnrouteMaster';
+import TransferTypeMaster from './TransferTypeMaster';
+import TransferMaster from './TransferMaster';
+import TransportationMaster from './TransportationMaster';
+import CityDistanceMaster from './CityDistanceMaster';
+import VehicleTypeMaster from './VehicleTypeMaster';
+import DriverMaster from './DriverMaster';
+import FleetMaster from './FleetMaster';
+import AirlineMaster from './AirlineMaster';
+import FlightSeatClassMaster from './FlightSeatClassMaster';
+import FlightMaster from './FlightMaster';
+import TrainMaster from './TrainMaster';
+import GuideMaster from './GuideMaster';
+import GuidePriceMaster from './GuidePriceMaster';
 
 // Configuration Data Interface
 interface MasterItem {
@@ -121,7 +137,7 @@ const MASTER_CONFIG: MasterCategory[] = [
     items: [
       { label: 'Airline Master', path: '/master/airline' },
       { label: 'Flight Seat Master', path: '/master/flight-seat' },
-      { label: 'Flight Cost Master', path: '/master/flight-cost' },
+      { label: 'Flight Master', path: '/master/flight' },
       { label: 'Train Master', path: '/master/train' },
     ]
   },
@@ -187,6 +203,22 @@ const MasterSettings: React.FC = () => {
       case '/master/restaurant': return <RestaurantMaster onBack={handleBack} />;
       case '/master/restaurant-meal-plan': return <RestaurantMealPlanMaster onBack={handleBack} />;
       case '/master/monument': return <MonumentMaster onBack={handleBack} />;
+      case '/master/monument-package': return <MonumentActivityPackageMaster onBack={handleBack} />;
+      case '/master/activity': return <ActivityMaster onBack={handleBack} />;
+      case '/master/enroute': return <EnrouteMaster onBack={handleBack} />;
+      case '/master/transfer-type': return <TransferTypeMaster onBack={handleBack} />;
+      case '/master/transfer': return <TransferMaster onBack={handleBack} />;
+      case '/master/transportation': return <TransportationMaster onBack={handleBack} />;
+      case '/master/city-distance': return <CityDistanceMaster onBack={handleBack} />;
+      case '/master/vehicle-type': return <VehicleTypeMaster onBack={handleBack} />;
+      case '/master/driver': return <DriverMaster onBack={handleBack} />;
+      case '/master/fleet': return <FleetMaster onBack={handleBack} />;
+      case '/master/airline': return <AirlineMaster onBack={handleBack} />;
+      case '/master/flight-seat': return <FlightSeatClassMaster onBack={handleBack} />;
+      case '/master/flight': return <FlightMaster onBack={handleBack} />;
+      case '/master/train': return <TrainMaster onBack={handleBack} />;
+      case '/master/guide': return <GuideMaster onBack={handleBack} />;
+      case '/master/guide-price': return <GuidePriceMaster onBack={handleBack} />;
       default: return (
         <div className="flex flex-col items-center justify-center h-full text-slate-400">
           <Settings size={48} className="mb-4 opacity-50" />

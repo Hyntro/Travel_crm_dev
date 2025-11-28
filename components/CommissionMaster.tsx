@@ -115,7 +115,7 @@ const CommissionMaster: React.FC<CommissionMasterProps> = ({ onBack }) => {
                   </div>
                   <div>
                      <label className="block text-xs font-semibold text-slate-500 mb-1">Commission Percentage(%)</label>
-                     <input type="text" value={newCommission.percentage || ''} onChange={(e) => setNewCommission({...newCommission, percentage: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                     <input type="number" value={newCommission.percentage || ''} onChange={(e) => setNewCommission({...newCommission, percentage: Number(e.target.value)})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                      <div className="h-0.5 w-8 bg-red-500 mt-1"></div>
                   </div>
                   <div>
@@ -135,3 +135,4 @@ const CommissionMaster: React.FC<CommissionMasterProps> = ({ onBack }) => {
 };
 
 export default CommissionMaster;
+    
