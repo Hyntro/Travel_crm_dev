@@ -8,7 +8,7 @@ import {
   MonumentPackage, ActivityMaster, Enroute, TransferType,
   SightseeingActivity, CityDistance, VehicleType, Driver, Fleet,
   Airline, FlightSeatClass, FlightMaster, TrainMaster, Guide,
-  GuideTariff
+  GuideTariff, AdditionalRequirement, ItineraryInfoMaster
 } from '../types';
 
 export const initialTransfers: TransferMaster[] = [
@@ -303,6 +303,41 @@ export const initialGuideTariffs: GuideTariff[] = [
     languageAllowance: 0,
     otherCost: 0,
     gstSlab: 'Slab 5',
+    status: 'Active'
+  }
+];
+
+export const initialAdditionalRequirements: AdditionalRequirement[] = [
+  {
+    id: 'ar1',
+    serviceType: 'Visa',
+    name: 'Indian E-Visa',
+    destinationId: 'd1',
+    destinationName: 'India',
+    currency: 'USD',
+    costType: 'Per Person',
+    adultCost: 25,
+    childCost: 25,
+    groupCost: 0,
+    displayName: 'E-Visa Fees',
+    showInProposal: 'Yes',
+    status: 'Active',
+    description: 'Standard e-visa fee',
+    language: 'English',
+    createdBy: 'Admin'
+  }
+];
+
+export const initialItineraryInfos: ItineraryInfoMaster[] = [
+  {
+    id: 'ii1',
+    fromDestinationId: 'd2',
+    fromDestinationName: 'Delhi',
+    toDestinationId: 'd1',
+    toDestinationName: 'Jaipur',
+    transferMode: 'Surface',
+    title: 'Drive to Jaipur',
+    description: 'Scenic drive from Delhi to Jaipur via NH48.',
     status: 'Active'
   }
 ];

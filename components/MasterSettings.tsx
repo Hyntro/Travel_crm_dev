@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Settings, Map, Bed, Car, CreditCard, ChevronRight, Globe, Shield, FileText, Flag, Plane, User, Plus, Search, Filter, ArrowLeft, X, Edit2, Trash2, MoreHorizontal, Check, Download, Upload, Eye, Image as ImageIcon, FileJson, History, Palette, Percent } from 'lucide-react';
+import { Settings, Map, Bed, Car, CreditCard, ChevronRight, Globe, Shield, FileText, Flag, Plane, User, Plus, Search, Filter, ArrowLeft, X, Edit2, Trash2, MoreHorizontal, Check, Download, Upload, Eye, Image as ImageIcon, FileJson, History, Palette, Percent, Layers } from 'lucide-react';
 import CountryMaster from './CountryMaster';
 import StateMaster from './StateMaster';
 import CityMaster from './CityMaster';
@@ -41,6 +41,7 @@ import FlightMaster from './FlightMaster';
 import TrainMaster from './TrainMaster';
 import GuideMaster from './GuideMaster';
 import GuidePriceMaster from './GuidePriceMaster';
+import AdditionalRequirementMaster from './AdditionalRequirementMaster';
 
 // Configuration Data Interface
 interface MasterItem {
@@ -153,15 +154,39 @@ const MASTER_CONFIG: MasterCategory[] = [
     ]
   },
   {
-    id: 'accounts',
-    title: 'Accounts',
+    id: 'additional',
+    title: 'Additional',
+    icon: Layers,
+    color: 'bg-slate-600',
+    description: 'Terms, Instructions & Settings',
+    items: [
+      { label: 'Additional Requirement', path: '/master/additional-requirement' },
+      { label: 'Itinerary Information', path: '/master/itinerary-info' },
+      { label: 'Itinerary Overview', path: '/master/itinerary-overview' },
+      { label: 'Emergency Contact Detail', path: '/master/emergency-contact' },
+      { label: 'FIT Inc&Exc/T&C', path: '/master/fit-terms' },
+      { label: 'GIT Inc&Exc/T&C', path: '/master/git-terms' },
+      { label: 'Client Billing Instruction', path: '/master/client-billing' },
+      { label: 'Supplier Billing Instruction', path: '/master/supplier-billing' },
+      { label: 'Invoice Billing Instruction', path: '/master/invoice-billing' },
+      { label: 'Letter Master', path: '/master/letter' },
+      { label: 'Proposal Settings Master', path: '/master/proposal-settings' },
+    ]
+  },
+  {
+    id: 'finance',
+    title: 'Finance Master',
     icon: CreditCard,
     color: 'bg-purple-600',
-    description: 'Finance and taxation',
+    description: 'Currency, Tax & Banking',
     items: [
-      { label: 'Currency', path: '/master/currency' },
+      { label: 'Currency Master', path: '/master/currency' },
+      { label: 'TAX Master', path: '/master/tax' },
+      { label: 'Expense Type Master', path: '/master/expense-type' },
+      { label: 'Expense Head Master', path: '/master/expense-head' },
       { label: 'Bank Master', path: '/master/bank' },
-      { label: 'Tax Rules', path: '/master/tax' },
+      { label: 'SAC Code Master', path: '/master/sac-code' },
+      { label: 'Payment Type Master', path: '/master/payment-type' },
     ]
   }
 ];
@@ -179,6 +204,7 @@ const MasterSettings: React.FC = () => {
 
   const renderActiveModule = () => {
     switch(activeModule) {
+      // General
       case '/master/country': return <CountryMaster onBack={handleBack} />;
       case '/master/state': return <StateMaster onBack={handleBack} />;
       case '/master/city': return <CityMaster onBack={handleBack} />;
@@ -191,6 +217,8 @@ const MasterSettings: React.FC = () => {
       case '/master/division': return <DivisionMaster onBack={handleBack} />;
       case '/master/season': return <SeasonMaster onBack={handleBack} />;
       case '/master/tour-type': return <TourTypeMaster onBack={handleBack} />;
+      
+      // Hotel
       case '/master/room-type': return <RoomTypeMaster onBack={handleBack} />;
       case '/master/amenities': return <AmenitiesMaster onBack={handleBack} />;
       case '/master/hotel-category': return <HotelCategoryMaster onBack={handleBack} />;
@@ -202,10 +230,14 @@ const MasterSettings: React.FC = () => {
       case '/master/operation-restriction': return <HotelOperationRestriction onBack={handleBack} />;
       case '/master/restaurant': return <RestaurantMaster onBack={handleBack} />;
       case '/master/restaurant-meal-plan': return <RestaurantMealPlanMaster onBack={handleBack} />;
+      
+      // Activity
       case '/master/monument': return <MonumentMaster onBack={handleBack} />;
       case '/master/monument-package': return <MonumentActivityPackageMaster onBack={handleBack} />;
       case '/master/activity': return <ActivityMaster onBack={handleBack} />;
       case '/master/enroute': return <EnrouteMaster onBack={handleBack} />;
+      
+      // Transport
       case '/master/transfer-type': return <TransferTypeMaster onBack={handleBack} />;
       case '/master/transfer': return <TransferMaster onBack={handleBack} />;
       case '/master/transportation': return <TransportationMaster onBack={handleBack} />;
@@ -213,17 +245,27 @@ const MasterSettings: React.FC = () => {
       case '/master/vehicle-type': return <VehicleTypeMaster onBack={handleBack} />;
       case '/master/driver': return <DriverMaster onBack={handleBack} />;
       case '/master/fleet': return <FleetMaster onBack={handleBack} />;
+      
+      // Flight/Train
       case '/master/airline': return <AirlineMaster onBack={handleBack} />;
       case '/master/flight-seat': return <FlightSeatClassMaster onBack={handleBack} />;
       case '/master/flight': return <FlightMaster onBack={handleBack} />;
       case '/master/train': return <TrainMaster onBack={handleBack} />;
+      
+      // Guide
       case '/master/guide': return <GuideMaster onBack={handleBack} />;
       case '/master/guide-price': return <GuidePriceMaster onBack={handleBack} />;
+
+      // Additional
+      case '/master/additional-requirement': return <AdditionalRequirementMaster onBack={handleBack} />;
+
+      // Additional & Finance (Placeholders for now as specific components aren't built yet)
       default: return (
         <div className="flex flex-col items-center justify-center h-full text-slate-400">
           <Settings size={48} className="mb-4 opacity-50" />
           <h3 className="text-lg font-medium">Module Under Development</h3>
-          <button onClick={handleBack} className="mt-4 text-blue-600 hover:underline">Go Back</button>
+          <p className="text-sm mt-2">The selected master module is coming soon.</p>
+          <button onClick={handleBack} className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">Go Back</button>
         </div>
       );
     }

@@ -1143,3 +1143,35 @@ export interface GuideTariff {
   gstSlab: string;
   status: 'Active' | 'Inactive';
 }
+
+export interface AdditionalRequirement {
+  id: string;
+  serviceType: string;
+  name: string;
+  destinationId: string;
+  destinationName: string;
+  currency: string;
+  costType: string;
+  adultCost?: number;
+  childCost?: number;
+  groupCost?: number;
+  displayName: string;
+  showInProposal: string;
+  status: 'Active' | 'Inactive';
+  image?: string;
+  description?: string;
+  language?: string;
+  createdBy: string;
+}
+
+export interface ItineraryInfoMaster {
+  id: string;
+  fromDestinationId: string;
+  fromDestinationName: string;
+  toDestinationId: string;
+  toDestinationName: string;
+  transferMode: string;
+  title: string;
+  description: string;
+  status: 'Active' | 'Inactive';
+}
