@@ -726,3 +726,256 @@ export interface TourType {
   modifiedBy: string;
   status: 'Active' | 'Inactive';
 }
+
+export interface RoomType {
+  id: string;
+  name: string;
+  info: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Amenity {
+  id: string;
+  name: string;
+  image?: string;
+  isDefault?: boolean;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface HotelCategory {
+  id: string;
+  categoryName: string;
+  starCategory: string;
+  keyword: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface HotelType {
+  id: string;
+  name: string;
+  keyword: string;
+  isHouseBoat: 'Yes' | 'No';
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface HotelMealPlan {
+  id: string;
+  name: string;
+  voucherName: string;
+  isDefault: boolean;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Weekend {
+  id: string;
+  name: string;
+  days: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface HotelContact {
+  id: string;
+  title: string;
+  firstName: string;
+  lastName: string;
+  designation: string;
+  countryCode: string;
+  phone1: string;
+  phone2?: string;
+  phone3?: string;
+  email: string;
+  secondaryEmail?: string;
+  isForContactList: boolean;
+}
+
+export interface HotelMaster {
+  id: string;
+  chain: string;
+  name: string;
+  destination: string;
+  category: string;
+  type: string;
+  email: string;
+  website: string;
+  weekendDays: string;
+  checkInTime: string;
+  checkOutTime: string;
+  status: 'Active' | 'Inactive';
+  
+  // Arrays for Multi-selects
+  amenities: string[];
+  roomTypes: string[];
+  
+  // Location/Billing
+  selfSupplier: 'Yes' | 'No';
+  country: string;
+  state: string;
+  city: string;
+  pinCode: string;
+  phone: string;
+  address: string;
+  gstn: string;
+  
+  // Dynamic
+  contacts: HotelContact[];
+  
+  // Content
+  description: string;
+  policy: string;
+  terms: string;
+  images: { id: string; url: string; name: string }[];
+  verified: 'Yes' | 'No';
+  internalNote: string;
+  
+  // Operation Restriction Fields (Extension)
+  restrictionFrom?: string;
+  restrictionTo?: string;
+  restrictionReason?: string;
+}
+
+// Tariff Model
+export interface HotelTariff {
+  id: string;
+  hotelId: string;
+  marketType: string;
+  supplierName: string;
+  paxType: string;
+  tariffType: string;
+  seasonType: string;
+  seasonYear: string;
+  validFrom: string;
+  validTo: string;
+  status: 'Active' | 'Inactive';
+  roomType: string;
+  mealPlan: string;
+  currency: string;
+  rates: {
+    single: number;
+    double: number;
+    extraBedAdult: number;
+    extraBedChild: number;
+    childWithBed: number;
+    tacPercentage: number;
+    roomTaxSlab: string;
+    mealTaxSlab: string;
+    markupType: '%' | 'Flat';
+    markupCost: number;
+  };
+  mealRates: {
+    breakfastAdult: number;
+    lunchAdult: number;
+    dinnerAdult: number;
+    breakfastChild: number;
+    lunchChild: number;
+    dinnerChild: number;
+  };
+  remarks: string;
+}
+
+export interface HotelChainContact {
+  id: string;
+  division: string;
+  title: string;
+  name: string;
+  designation: string;
+  countryCode: string;
+  phone: string;
+  email: string;
+  isPrimary: boolean;
+}
+
+export interface HotelChain {
+  id: string;
+  name: string;
+  destinations: string; 
+  website: string;
+  contacts: HotelChainContact[];
+  location: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface HotelRestriction {
+  id: string;
+  hotelId: string;
+  fromDate: string;
+  toDate: string;
+  reason: string;
+}
+
+export interface Restaurant {
+  id: string;
+  name: string;
+  destination: string;
+  address: string;
+  country: string;
+  state: string;
+  city: string;
+  pinCode: string;
+  gstn: string;
+  supplier: 'Yes' | 'No';
+  status: 'Active' | 'Inactive';
+  image?: string;
+  contact: {
+    title: string;
+    name: string;
+    designation: string;
+    countryCode: string;
+    phone1: string;
+    phone2?: string;
+    phone3?: string;
+    email: string;
+    secondaryEmail?: string;
+  }
+}
+
+export interface RestaurantMealPlan {
+  id: string;
+  name: string;
+  createdBy: string;
+  modifiedBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Monument {
+  id: string;
+  serviceCode: string;
+  name: string;
+  destinationId: string;
+  destinationName: string;
+  description: string;
+  closedDays: string;
+  isDefault: 'Yes' | 'No';
+  showInProposal: 'Yes' | 'No';
+  status: 'Active' | 'Inactive';
+  languages: string;
+  gallery?: string;
+}
+
+export interface MonumentTariff {
+  id: string;
+  monumentId: string;
+  supplierName: string;
+  nationality: string;
+  validFrom: string;
+  validTo: string;
+  currency: string;
+  adultFee: number;
+  childFee: number;
+  status: 'Active' | 'Inactive';
+  taxSlab: string;
+  policy: string;
+  terms: string;
+  remarks: string;
+}

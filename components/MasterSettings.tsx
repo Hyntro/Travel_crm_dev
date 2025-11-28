@@ -13,6 +13,18 @@ import CommissionMaster from './CommissionMaster';
 import DivisionMaster from './DivisionMaster';
 import SeasonMaster from './SeasonMaster';
 import TourTypeMaster from './TourTypeMaster';
+import RoomTypeMaster from './RoomTypeMaster';
+import AmenitiesMaster from './AmenitiesMaster';
+import HotelCategoryMaster from './HotelCategoryMaster';
+import HotelTypeMaster from './HotelTypeMaster';
+import HotelMealPlanMaster from './HotelMealPlanMaster';
+import WeekendMaster from './WeekendMaster';
+import HotelMaster from './HotelMaster';
+import HotelChainMaster from './HotelChainMaster';
+import HotelOperationRestriction from './HotelOperationRestriction';
+import RestaurantMaster from './RestaurantMaster';
+import RestaurantMealPlanMaster from './RestaurantMealPlanMaster';
+import MonumentMaster from './MonumentMaster';
 
 // Configuration Data Interface
 interface MasterItem {
@@ -163,6 +175,18 @@ const MasterSettings: React.FC = () => {
       case '/master/division': return <DivisionMaster onBack={handleBack} />;
       case '/master/season': return <SeasonMaster onBack={handleBack} />;
       case '/master/tour-type': return <TourTypeMaster onBack={handleBack} />;
+      case '/master/room-type': return <RoomTypeMaster onBack={handleBack} />;
+      case '/master/amenities': return <AmenitiesMaster onBack={handleBack} />;
+      case '/master/hotel-category': return <HotelCategoryMaster onBack={handleBack} />;
+      case '/master/hotel-type': return <HotelTypeMaster onBack={handleBack} />;
+      case '/master/hotel-meal-plan': return <HotelMealPlanMaster onBack={handleBack} />;
+      case '/master/weekend': return <WeekendMaster onBack={handleBack} />;
+      case '/master/hotel': return <HotelMaster onBack={handleBack} />;
+      case '/master/hotel-chain': return <HotelChainMaster onBack={handleBack} />;
+      case '/master/operation-restriction': return <HotelOperationRestriction onBack={handleBack} />;
+      case '/master/restaurant': return <RestaurantMaster onBack={handleBack} />;
+      case '/master/restaurant-meal-plan': return <RestaurantMealPlanMaster onBack={handleBack} />;
+      case '/master/monument': return <MonumentMaster onBack={handleBack} />;
       default: return (
         <div className="flex flex-col items-center justify-center h-full text-slate-400">
           <Settings size={48} className="mb-4 opacity-50" />
