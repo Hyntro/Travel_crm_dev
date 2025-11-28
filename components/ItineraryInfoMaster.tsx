@@ -138,12 +138,12 @@ const ItineraryInfoMaster: React.FC<ItineraryInfoMasterProps> = ({ onBack }) => 
                         <td className="px-6 py-4 text-sm font-mono text-blue-600 font-medium align-top">{info.id}</td>
                         <td className="px-6 py-4 align-top">
                            <div className="font-bold text-slate-800 text-sm mb-1">{info.title}</div>
-                           <div className="text-xs text-slate-500 line-clamp-2" dangerouslySetInnerHTML={{ __html: info.description }} />
-                           <div className="mt-2 flex gap-2">
+                           <div className="text-xs text-slate-500 line-clamp-2 mb-2" dangerouslySetInnerHTML={{ __html: info.description }} />
+                           <div className="flex gap-2">
                               <span className="text-[10px] px-2 py-0.5 bg-slate-100 rounded text-slate-600 border border-slate-200">
                                 {info.fromDestinationName} → {info.toDestinationName}
                               </span>
-                              <span className="text-[10px] px-2 py-0.5 bg-slate-100 rounded text-slate-600 border border-slate-200">
+                              <span className="text-[10px] px-2 py-0.5 bg-blue-50 rounded text-blue-600 border border-blue-100">
                                 {info.transferMode}
                               </span>
                            </div>

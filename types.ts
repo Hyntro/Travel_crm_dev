@@ -43,6 +43,29 @@ export interface TransportationTariff {
   remarks: string;
 }
 
+export interface EmergencyContact {
+  id: string;
+  contactName: string;
+  countryCode: string;
+  mobileNumber: string;
+  mobileNumber2: string;
+  emailId: string;
+  availableOn: string;
+  isProposalContact: boolean;
+}
+
+export interface FitInclusionMaster {
+  id: string;
+  name: string;
+  destinationId: string;
+  destinationName: string;
+  inclusion: string;
+  exclusion: string;
+  status: 'Active' | 'Inactive';
+  language: string;
+  isDefault: boolean;
+}
+
 // --- General & AI ---
 export interface ItineraryDay {
   day: number;
@@ -1174,4 +1197,13 @@ export interface ItineraryInfoMaster {
   title: string;
   description: string;
   status: 'Active' | 'Inactive';
+}
+
+export interface ItineraryOverview {
+  id: string;
+  name: string;
+  overviewInfo: string;
+  highlightInfo: string;
+  language: string;
+  status: 'Active' | 'Inactive' | 'In Active';
 }

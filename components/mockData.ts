@@ -8,8 +8,120 @@ import {
   MonumentPackage, ActivityMaster, Enroute, TransferType,
   SightseeingActivity, CityDistance, VehicleType, Driver, Fleet,
   Airline, FlightSeatClass, FlightMaster, TrainMaster, Guide,
-  GuideTariff, AdditionalRequirement, ItineraryInfoMaster
+  GuideTariff, AdditionalRequirement, ItineraryInfoMaster,
+  ItineraryOverview, EmergencyContact, FitInclusionMaster
 } from '../types';
+
+export const initialFitInclusions: FitInclusionMaster[] = [
+  {
+    id: '1',
+    name: 'PI Proposal',
+    destinationId: 'All',
+    destinationName: 'All',
+    inclusion: `<ul>
+    <li>Daily elaborate buffet breakfast at all the hotels</li>
+    <li>Lunch at a local restaurant in Delhi on Aug.24</li>
+    <li>Welcome dinner at Dhilli OR Indian Accent restaurant on Aug.24</li>
+    <li>Dinner at Esphahan restaurant at Agra on Aug.25</li>
+    <li>Lunch at Aagman Camp on the way to Jaipur on Aug.26</li>
+    <li>Farm-to-table organic lunch at farmhouse in Jaipur on Aug.28</li>
+    <li>Lunch at Panna Villas restaurant local restaurant in Udaipur on Aug.30</li>
+    <li>Culinary session followed by dinner with Noble family in Udaipur on Aug.30</li>
+    </ul>`,
+    exclusion: `<ul>
+    <li>Meeting and assistance on arrival/departure by our representative</li>
+    <li>VIP Meet and assistance upon arrival at Delhi Airport on Aug.23</li>
+    <li>All sightseeing excursions as mentioned in the itinerary.</li>
+    <li>Private Chauffeur-driven, air-conditioned Force Urbania Minivan (8-seater, 2024 model) for all transfers and excursions. Complimentary packaged drinking water and soft beverages in all vehicles</li>
+    <li>Meet and assist at all hotels and airports.</li>
+    </ul>`,
+    status: 'Active',
+    language: 'English',
+    isDefault: false
+  },
+  {
+    id: '2',
+    name: 'Golden Triangle',
+    destinationId: 'd1,d2',
+    destinationName: 'Agra, Jaipur',
+    inclusion: `<ul>
+    <li>Accommodation as per itinerary - Double room on twin sharing basis at all destinations. (We will offer choice to select hotel in 4 star catagory)</li>
+    <li>Daily Breakfast at hotel.</li>
+    <li>Private AC car for all transfers, sightseeing and drives.</li>
+    <li>Assistance on arrival and departure.</li>
+    <li>Monuments Entrance fees during sightseeing</li>
+    <li>Tour Guides.</li>
+    <li>All the taxes included, no hidden charges.</li>
+    </ul>`,
+    exclusion: `<ul>
+    <li>Air fare / train fare.</li>
+    <li>Any other item not specified in the Package Inclusions.</li>
+    <li>Gratuities.</li>
+    <li>Lunch and Dinner</li>
+    </ul>`,
+    status: 'Active',
+    language: 'English',
+    isDefault: false
+  },
+  {
+    id: '3',
+    name: 'Rajasthan Heritage Exploration',
+    destinationId: 'd1',
+    destinationName: 'Jaisalmer, Jodhpur, Udaipur',
+    inclusion: `<ul>
+    <li><strong>Accommodation:</strong> 1 night in a luxury hotel in Delhi, 1 night in a luxury hotel in Agra, 2 nights in a luxury hotel in Jaipur.</li>
+    <li><strong>Meals:</strong> Daily breakfast and dinner, including special regional dinners.</li>
+    <li><strong>Transportation:</strong> Private air-conditioned vehicle with driver for all transfers and sightseeing.</li>
+    <li><strong>Guides:</strong> English-speaking guides for sightseeing in Delhi, Agra, and Jaipur.</li>
+    <li><strong>Entry Fees:</strong> Entry fees to all mentioned attractions.</li>
+    <li><strong>Activities:</strong> Camel ride</li>
+    </ul>`,
+    exclusion: `<ul>
+    <li><strong>International Airfare:</strong> Flights to and from India.</li>
+    <li><strong>Lunch and Additional Meals:</strong> Meals not mentioned in the itinerary.</li>
+    <li><strong>Personal Expenses:</strong> Tips, laundry, phone calls, etc.</li>
+    <li><strong>Optional Activities:</strong> Activities not mentioned in the itinerary.</li>
+    <li><strong>Travel Insurance:</strong> Insurance coverage for the duration of the trip.</li>
+    <li><strong>Visa Fees:</strong> Indian visa fees.</li>
+    </ul>`,
+    status: 'Active',
+    language: 'English',
+    isDefault: false
+  }
+];
+
+export const initialEmergencyContacts: EmergencyContact[] = [
+  {
+    id: 'ec1',
+    contactName: 'raja',
+    countryCode: '+91',
+    mobileNumber: '789456123',
+    mobileNumber2: '2144234211',
+    emailId: 'rajakumar@gmail.com',
+    availableOn: 'Calls & Whatsapp',
+    isProposalContact: true
+  },
+  {
+    id: 'ec2',
+    contactName: 'Naman Dheer',
+    countryCode: '91',
+    mobileNumber: '9897969594',
+    mobileNumber2: '',
+    emailId: '',
+    availableOn: '',
+    isProposalContact: false
+  },
+  {
+    id: 'ec3',
+    contactName: 'Ankit Kumar Sharma',
+    countryCode: '+91',
+    mobileNumber: '08279530775',
+    mobileNumber2: '',
+    emailId: '',
+    availableOn: '',
+    isProposalContact: false
+  }
+];
 
 export const initialTransfers: TransferMaster[] = [
   {
@@ -339,5 +451,40 @@ export const initialItineraryInfos: ItineraryInfoMaster[] = [
     title: 'Drive to Jaipur',
     description: 'Scenic drive from Delhi to Jaipur via NH48.',
     status: 'Active'
+  }
+];
+
+export const initialItineraryOverviews: ItineraryOverview[] = [
+  {
+    id: '1',
+    name: 'Aspire Magic',
+    overviewInfo: 'The Red Fort, also known as Lal Qila...',
+    highlightInfo: 'The Red Fort, also known as Lal Qila...',
+    language: 'English',
+    status: 'Active'
+  },
+  {
+    id: '2',
+    name: 'Rajasthan Heritage Exploration',
+    overviewInfo: 'Experience the regal splendor...',
+    highlightInfo: 'Udaipur: Discover the romantic city...',
+    language: 'English',
+    status: 'Active'
+  },
+  {
+    id: '3',
+    name: 'Golden Trangle',
+    overviewInfo: 'Golden Triangle Tour Itinerary...',
+    highlightInfo: 'Dear Clients, if you are planning...',
+    language: 'English',
+    status: 'Active'
+  },
+  {
+    id: '4',
+    name: 'Agra',
+    overviewInfo: 'it is for example',
+    highlightInfo: '',
+    language: 'English',
+    status: 'In Active'
   }
 ];

@@ -42,6 +42,10 @@ import TrainMaster from './TrainMaster';
 import GuideMaster from './GuideMaster';
 import GuidePriceMaster from './GuidePriceMaster';
 import AdditionalRequirementMaster from './AdditionalRequirementMaster';
+import ItineraryInfoMaster from './ItineraryInfoMaster';
+import ItineraryOverviewMaster from './ItineraryOverviewMaster';
+import EmergencyContactMaster from './EmergencyContactMaster';
+import FitInclusionMaster from './FitInclusionMaster';
 
 // Configuration Data Interface
 interface MasterItem {
@@ -258,6 +262,10 @@ const MasterSettings: React.FC = () => {
 
       // Additional
       case '/master/additional-requirement': return <AdditionalRequirementMaster onBack={handleBack} />;
+      case '/master/itinerary-info': return <ItineraryInfoMaster onBack={handleBack} />;
+      case '/master/itinerary-overview': return <ItineraryOverviewMaster onBack={handleBack} />;
+      case '/master/emergency-contact': return <EmergencyContactMaster onBack={handleBack} />;
+      case '/master/fit-terms': return <FitInclusionMaster onBack={handleBack} />;
 
       // Additional & Finance (Placeholders for now as specific components aren't built yet)
       default: return (
