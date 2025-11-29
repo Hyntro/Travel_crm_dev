@@ -12,7 +12,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout }) 
   const mainItems = [
     { id: 'dashboard', label: 'Query Dashboard', icon: LayoutDashboard },
     { id: 'sales-dashboard', label: 'Sales Dashboard', icon: BarChart2 },
-    { id: 'quotation', label: 'Quotation Builder', icon: FileSignature },
     { id: 'lead-manager', label: 'Lead Manager', icon: Contact },
     { id: 'activities', label: 'Activities', icon: CheckSquare },
   ];
@@ -159,19 +158,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout }) 
                 }`}
             >
                 <Settings size={16} />
-                <span className="font-medium text-sm">Personal Settings</span>
-            </button>
-
-            <button 
-                onClick={() => setActiveTab('users')}
-                className={`w-full flex items-center space-x-3 px-2 py-2 rounded-lg transition-all duration-200 ${
-                  activeTab === 'users'
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                }`}
-            >
-                <Users size={16} />
-                <span className="font-medium text-sm">User Management</span>
+                <span className="font-medium text-sm">Setup</span>
             </button>
 
             <div className="h-px bg-slate-800 my-2 mx-1"></div>

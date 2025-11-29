@@ -9,8 +9,141 @@ import {
   SightseeingActivity, CityDistance, VehicleType, Driver, Fleet,
   Airline, FlightSeatClass, FlightMaster, TrainMaster, Guide,
   GuideTariff, AdditionalRequirement, ItineraryInfoMaster,
-  ItineraryOverview, EmergencyContact, FitInclusionMaster
+  ItineraryOverview, EmergencyContact, FitInclusionMaster, GitInclusionMaster,
+  ClientBillingInstruction, SupplierBillingInstruction, ProposalSettings,
+  Currency, TaxMaster, ExpenseType, ExpenseHead, SacCode, PaymentType, BankMaster,
+  RoleNode, Profile, Department
 } from '../types';
+
+export const initialBanks: BankMaster[] = [
+    {
+        id: '1',
+        bankName: 'HDFC Bank',
+        accountType: 'Current',
+        accountNumber: '50200012345678',
+        beneficiaryName: 'Travel Agency Pvt Ltd',
+        branchIfsc: 'HDFC0001234',
+        branchAddress: 'MG Road, Bangalore',
+        status: 'Active',
+        showHide: 'Yes',
+        isDefault: true,
+        createdBy: 'Admin',
+        modifiedBy: 'Admin'
+    }
+];
+
+export const initialCurrencies: Currency[] = [
+    { id: '1', countryId: '1', countryName: 'India', currencyCode: 'INR', currencyName: 'Indian Rupee', exchangeRate: 1.00, status: 'Active' },
+    { id: '2', countryId: '2', countryName: 'USA', currencyCode: 'USD', currencyName: 'US Dollar', exchangeRate: 84.50, status: 'Active' },
+];
+
+export const initialTaxes: TaxMaster[] = [
+    { id: '1', serviceType: 'Hotel', currency: 'INR', slabName: 'GST 12%', taxValue: '12', priceRangeFrom: 1000, priceRangeTo: 7500, isDefault: false, createdBy: 'Admin', status: 'Active' },
+    { id: '2', serviceType: 'Transport', currency: 'INR', slabName: 'GST 5%', taxValue: '5', priceRangeFrom: 0, priceRangeTo: 0, isDefault: true, createdBy: 'Admin', status: 'Active' },
+];
+
+export const initialExpenseHeads: ExpenseHead[] = [
+    { id: '1', name: 'Operational Expenses', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+    { id: '2', name: 'Marketing Expenses', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+];
+
+export const initialExpenseTypes: ExpenseType[] = [
+    { id: '1', expenseHeadId: '1', expenseHeadName: 'Operational Expenses', name: 'Fuel', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+    { id: '2', expenseHeadId: '2', expenseHeadName: 'Marketing Expenses', name: 'Google Ads', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+];
+
+export const initialSacCodes: SacCode[] = [
+    { id: '1', serviceType: 'Tour Package', sacCode: '9985', taxSlab: 'GST 5%', isDefault: true, status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+];
+
+export const initialPaymentTypes: PaymentType[] = [
+    { id: '1', name: 'Bank Transfer', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+    { id: '2', name: 'Credit Card', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+    { id: '3', name: 'Cash', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+];
+
+export const initialClientBillingInstructions: ClientBillingInstruction[] = [
+    {
+        id: '1',
+        name: '<p><strong>Payment Terms:</strong> 50% Advance, Balance before travel.</p>',
+        isDefault: true,
+        status: 'Active'
+    }
+];
+
+export const initialSupplierBillingInstructions: SupplierBillingInstruction[] = [
+    {
+        id: '1',
+        name: '<p><strong>Invoice Submission:</strong> Submit invoices by 5th of every month.</p>',
+        isDefault: true,
+        status: 'Active'
+    }
+];
+
+export const initialProposalSettings: ProposalSettings[] = [
+    {
+        id: '1',
+        proposalNum: 'P027',
+        proposalName: 'Aspire Proposal',
+        backgroundColor: '#d4d0b4',
+        textColor: '#000000',
+        headerImage: '', // URL would go here
+        bannerImage: '', // URL would go here
+        photoDimensions: '750x500',
+        isDefault: false,
+        status: 'Active'
+    },
+    {
+        id: '2',
+        proposalNum: 'P002',
+        proposalName: 'Brief Proposal',
+        backgroundColor: '#4b0082',
+        textColor: '#ffffff',
+        headerImage: '',
+        bannerImage: '',
+        photoDimensions: '800x300',
+        isDefault: true,
+        status: 'Active'
+    }
+];
+
+export const initialRoles: RoleNode = {
+    id: 'root',
+    name: 'TravCRM',
+    children: [
+        {
+            id: 'ceo',
+            name: 'CEO',
+            children: [
+                { id: 'vp', name: 'Vice President' },
+                { 
+                    id: 'mgr', 
+                    name: 'Manager',
+                    children: [
+                        { id: 'ops', name: 'Operation' },
+                        { id: 'sales', name: 'Sales' }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
+export const initialProfiles: Profile[] = [
+    { id: '1', name: 'Agent', createdAt: '08-04-2022', createdBy: 'Administrator CRM', modifiedBy: 'Administrator CRM', modifiedByDate: '01-07-2024' },
+    { id: '2', name: 'Operations', createdAt: '15-06-2023', createdBy: 'Administrator CRM', modifiedBy: 'Administrator CRM', modifiedByDate: '22-03-2025' },
+    { id: '3', name: 'Technical dashboard', description: 'Software Developer', createdAt: '11-10-2023', createdBy: 'Administrator CRM' },
+    { id: '4', name: 'Sales', createdAt: '31-05-2024', createdBy: 'Administrator CRM', modifiedBy: 'Mohd Rizwan', modifiedByDate: '01-07-2025' },
+    { id: '5', name: 'Sub Admin', createdAt: '15-02-2025', createdBy: 'Administrator CRM', modifiedBy: 'Administrator CRM', modifiedByDate: '15-02-2025' },
+];
+
+export const initialDepartments: Department[] = [
+    { id: '1', name: 'Technical Department', createdBy: 'Administrator CRM', createdAt: '27-02-2021', modifiedBy: 'Administrator CRM', modifiedAt: '01-03-2021' },
+    { id: '2', name: 'Operation', createdBy: 'Administrator CRM', createdAt: '02-04-2021', modifiedBy: 'Mohd Rizwan', modifiedAt: '17-10-2022' },
+    { id: '3', name: 'sales', createdBy: 'Administrator CRM', createdAt: '13-05-2021', modifiedBy: '', modifiedAt: '' },
+    { id: '4', name: 'Sales', createdBy: 'Administrator CRM', createdAt: '13-05-2021', modifiedBy: 'Mohd Rizwan', modifiedAt: '17-10-2022' },
+    { id: '5', name: 'Bangaluru', createdBy: 'Administrator CRM', createdAt: '22-11-2022', modifiedBy: '', modifiedAt: '' },
+];
 
 export const initialFitInclusions: FitInclusionMaster[] = [
   {
@@ -84,6 +217,39 @@ export const initialFitInclusions: FitInclusionMaster[] = [
     <li><strong>Travel Insurance:</strong> Insurance coverage for the duration of the trip.</li>
     <li><strong>Visa Fees:</strong> Indian visa fees.</li>
     </ul>`,
+    status: 'Active',
+    language: 'English',
+    isDefault: false
+  }
+];
+
+export const initialGitInclusions: GitInclusionMaster[] = [
+  {
+    id: '1',
+    name: 'Tiranga',
+    destinationId: 'd2',
+    destinationName: 'Agra, ',
+    inclusion: `<ul>
+    <li>Accommodation as per itinerary - Double room on twin sharing basis at all destinations. (We will offer choice to select hotel in 4 star catagory)</li>
+    <li>Daily Breakfast at hotel.</li>
+    <li>Private AC car for all transfers, sightseeing and drives.</li>
+    <li>Assistance on arrival and departure.</li>
+    <li>Monuments Entrance fees during sightseeing</li>
+    <li>Tour Guides.</li>
+    <li>All the taxes included, no hidden charges.</li>
+    </ul>`,
+    exclusion: `<ul>
+    <li>Accommodation as per itinerary - Double room on twin sharing basis at all destinations. (We will offer choice to select hotel in 4 star catagory)</li>
+    <li>Daily Breakfast at hotel.</li>
+    <li>Private AC car for all transfers, sightseeing and drives.</li>
+    <li>Assistance on arrival and departure.</li>
+    <li>Monuments Entrance fees during sightseeing</li>
+    <li>Tour Guides.</li>
+    <li>All the taxes included, no hidden charges.</li>
+    </ul>`,
+    terms: '',
+    cancellationPolicy: '',
+    remarks: '',
     status: 'Active',
     language: 'English',
     isDefault: false

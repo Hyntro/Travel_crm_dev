@@ -66,6 +66,126 @@ export interface FitInclusionMaster {
   isDefault: boolean;
 }
 
+export interface GitInclusionMaster {
+  id: string;
+  name: string;
+  destinationId: string;
+  destinationName: string;
+  inclusion: string;
+  exclusion: string;
+  terms: string;
+  cancellationPolicy: string;
+  remarks: string;
+  status: 'Active' | 'Inactive';
+  language: string;
+  isDefault: boolean;
+}
+
+export interface ClientBillingInstruction {
+  id: string;
+  name: string; // The instruction HTML content
+  isDefault: boolean;
+  status: 'Active' | 'Inactive';
+}
+
+export interface SupplierBillingInstruction {
+  id: string;
+  name: string; // The instruction HTML content
+  isDefault: boolean;
+  status: 'Active' | 'Inactive';
+}
+
+export interface ProposalSettings {
+  id: string;
+  proposalNum: string;
+  proposalName: string;
+  backgroundColor: string;
+  textColor: string;
+  headerImage?: string;
+  bannerImage?: string;
+  photoDimensions?: string;
+  isDefault: boolean;
+  status: 'Active' | 'Inactive';
+}
+
+export interface Currency {
+  id: string;
+  countryId: string;
+  countryName: string;
+  currencyCode: string;
+  currencyName: string;
+  exchangeRate?: number;
+  status: 'Active' | 'Inactive';
+}
+
+export interface TaxMaster {
+  id: string;
+  serviceType: string;
+  currency?: string;
+  slabName: string;
+  taxValue: string; 
+  priceRangeFrom?: number;
+  priceRangeTo?: number;
+  isDefault?: boolean;
+  createdBy: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface ExpenseHead {
+  id: string;
+  name: string;
+  status: 'Active' | 'Inactive';
+  createdBy: string;
+  modifiedBy: string;
+}
+
+export interface ExpenseType {
+  id: string;
+  expenseHeadId: string;
+  expenseHeadName: string;
+  name: string;
+  status: 'Active' | 'Inactive';
+  createdBy: string;
+  modifiedBy: string;
+}
+
+export interface SacCode {
+  id: string;
+  serviceType: string;
+  sacCode: string;
+  taxSlab?: string;
+  isDefault: boolean;
+  status: 'Active' | 'Inactive';
+  createdBy: string;
+  modifiedBy: string;
+}
+
+export interface PaymentType {
+  id: string;
+  name: string;
+  status: 'Active' | 'Inactive';
+  createdBy: string;
+  modifiedBy: string;
+}
+
+export interface BankMaster {
+  id: string;
+  bankName: string;
+  accountType: string;
+  accountNumber: string;
+  beneficiaryName: string;
+  branchAddress: string;
+  branchIfsc: string;
+  branchSwiftCode?: string;
+  upiId?: string;
+  qrCodeImage?: string;
+  status: 'Active' | 'Inactive';
+  showHide: 'Yes' | 'No';
+  isDefault: boolean;
+  createdBy: string;
+  modifiedBy: string;
+}
+
 // --- General & AI ---
 export interface ItineraryDay {
   day: number;
@@ -140,9 +260,12 @@ export interface SalesStage {
 export interface User {
   id: string;
   code?: string;
+  firstName?: string;
+  lastName?: string;
   name: string;
   email: string;
   mobile?: string;
+  phone?: string;
   role: string;
   department?: string;
   reportingManager?: string;
@@ -155,13 +278,63 @@ export interface User {
     zip: string;
     country: string;
   };
+  // New fields for detailed form
+  officeName?: string;
+  timeFormat?: '12 Hours' | '24 Hours';
+  password?: string;
+  languageKnown?: string;
+  pin?: string;
+  destinations?: string[];
+  mailPassword?: string;
+  userType?: string; // e.g., Sales Person
+  userLoginType?: string; // e.g., Internal User
+  profile?: string; // e.g., Administrator
 }
 
-export interface Role {
+// Updated Role Interface for Tree Structure
+export interface RoleNode {
   id: string;
   name: string;
-  parentId: string | null;
-  children?: Role[];
+  reportsTo?: string;
+  description?: string;
+  children?: RoleNode[];
+}
+
+export interface Profile {
+  id: string;
+  name: string;
+  description?: string;
+  cloneFrom?: string;
+  permissions?: string[];
+  createdBy: string;
+  modifiedBy?: string;
+  createdAt: string;
+  modifiedByDate?: string;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+  createdBy: string;
+  modifiedBy: string;
+  createdAt: string;
+  modifiedAt?: string;
+}
+
+// --- Email Settings ---
+export interface EmailConfiguration {
+  id: string;
+  fromName: string;
+  email: string;
+  password?: string;
+  smtpServer?: string;
+  smtpPort?: string;
+  securityType?: 'None' | 'SSL' | 'TLS';
+  imapServer?: string;
+  imapPort?: string;
+  imapSecurityType?: 'None' | 'SSL' | 'TLS';
+  imapFilter?: string;
+  isDefault: boolean;
 }
 
 // --- Travel Query ---

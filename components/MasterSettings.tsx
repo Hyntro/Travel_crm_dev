@@ -46,6 +46,17 @@ import ItineraryInfoMaster from './ItineraryInfoMaster';
 import ItineraryOverviewMaster from './ItineraryOverviewMaster';
 import EmergencyContactMaster from './EmergencyContactMaster';
 import FitInclusionMaster from './FitInclusionMaster';
+import GitInclusionMaster from './GitInclusionMaster';
+import ClientBillingInstructionMaster from './ClientBillingInstructionMaster';
+import SupplierBillingInstructionMaster from './SupplierBillingInstructionMaster';
+import ProposalSettingsMaster from './ProposalSettingsMaster';
+import CurrencyMaster from './CurrencyMaster';
+import TaxMaster from './TaxMaster';
+import ExpenseTypeMaster from './ExpenseTypeMaster';
+import ExpenseHeadMaster from './ExpenseHeadMaster';
+import SacCodeMaster from './SacCodeMaster';
+import PaymentTypeMaster from './PaymentTypeMaster';
+import BankMaster from './BankMaster';
 
 // Configuration Data Interface
 interface MasterItem {
@@ -172,8 +183,6 @@ const MASTER_CONFIG: MasterCategory[] = [
       { label: 'GIT Inc&Exc/T&C', path: '/master/git-terms' },
       { label: 'Client Billing Instruction', path: '/master/client-billing' },
       { label: 'Supplier Billing Instruction', path: '/master/supplier-billing' },
-      { label: 'Invoice Billing Instruction', path: '/master/invoice-billing' },
-      { label: 'Letter Master', path: '/master/letter' },
       { label: 'Proposal Settings Master', path: '/master/proposal-settings' },
     ]
   },
@@ -188,9 +197,9 @@ const MASTER_CONFIG: MasterCategory[] = [
       { label: 'TAX Master', path: '/master/tax' },
       { label: 'Expense Type Master', path: '/master/expense-type' },
       { label: 'Expense Head Master', path: '/master/expense-head' },
-      { label: 'Bank Master', path: '/master/bank' },
       { label: 'SAC Code Master', path: '/master/sac-code' },
       { label: 'Payment Type Master', path: '/master/payment-type' },
+      { label: 'Bank Master', path: '/master/bank' },
     ]
   }
 ];
@@ -266,8 +275,20 @@ const MasterSettings: React.FC = () => {
       case '/master/itinerary-overview': return <ItineraryOverviewMaster onBack={handleBack} />;
       case '/master/emergency-contact': return <EmergencyContactMaster onBack={handleBack} />;
       case '/master/fit-terms': return <FitInclusionMaster onBack={handleBack} />;
+      case '/master/git-terms': return <GitInclusionMaster onBack={handleBack} />;
+      case '/master/client-billing': return <ClientBillingInstructionMaster onBack={handleBack} />;
+      case '/master/supplier-billing': return <SupplierBillingInstructionMaster onBack={handleBack} />;
+      case '/master/proposal-settings': return <ProposalSettingsMaster onBack={handleBack} />;
 
-      // Additional & Finance (Placeholders for now as specific components aren't built yet)
+      // Finance
+      case '/master/currency': return <CurrencyMaster onBack={handleBack} />;
+      case '/master/tax': return <TaxMaster onBack={handleBack} />;
+      case '/master/expense-type': return <ExpenseTypeMaster onBack={handleBack} />;
+      case '/master/expense-head': return <ExpenseHeadMaster onBack={handleBack} />;
+      case '/master/sac-code': return <SacCodeMaster onBack={handleBack} />;
+      case '/master/payment-type': return <PaymentTypeMaster onBack={handleBack} />;
+      case '/master/bank': return <BankMaster onBack={handleBack} />;
+
       default: return (
         <div className="flex flex-col items-center justify-center h-full text-slate-400">
           <Settings size={48} className="mb-4 opacity-50" />
