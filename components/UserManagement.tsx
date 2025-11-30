@@ -2,16 +2,7 @@
 import React, { useState } from 'react';
 import { Users, Plus, Edit2, X, Save, Filter, ChevronDown, UserPlus } from 'lucide-react';
 import { User } from '../types';
-
-// Mock Data based on screenshot
-const initialUsers: User[] = [
-  { id: '1', code: '12', name: 'nexgen', firstName: 'nexgen', email: 'nexgen@gmail.com', officeName: 'Select Office', role: 'CEO', userType: 'Account Manager', profile: 'Administrator', reportingManager: 'Administrator CRM', status: 'Active', address: { street: '', city: '', state: '', zip: '', country: '' } },
-  { id: '2', code: 'AK', name: 'Ankit kumar Sharma', firstName: 'Ankit', lastName: 'Sharma', email: 'ankit.kumar@deboxglobal.com', officeName: 'Select Office', role: 'Operation', userType: 'Operations Person', profile: 'Administrator', reportingManager: 'Administrator CRM', status: 'Active', address: { street: '', city: '', state: '', zip: '', country: '' } },
-  { id: '3', code: 'SK', name: 'Saurav KUmar', firstName: 'Saurav', lastName: 'KUmar', email: 'saurav.kumar@deboxglobal.com', officeName: 'Select Office', role: 'CEO', userType: 'Sales Person', profile: 'Administrator', reportingManager: 'Administrator CRM', status: 'Active', address: { street: '', city: '', state: '', zip: '', country: '' } },
-  { id: '4', code: '001', name: 'Dinesh Khari', firstName: 'Dinesh', lastName: 'Khari', email: 'dinesh.khari@deboxglobal.com', officeName: 'Select Office', role: 'Operation', userType: 'Account Manager', profile: 'Administrator', reportingManager: 'Administrator CRM', status: 'Active', address: { street: '', city: '', state: '', zip: '', country: '' } },
-  { id: '5', code: '01', name: 'Mohd Rizwan', firstName: 'Mohd', lastName: 'Rizwan', email: 'mohd.rizwan@deboxglobal.com', officeName: 'Select Office', role: 'Vice President', userType: 'Contracting Person', profile: 'Administrator', reportingManager: 'Administrator CRM', status: 'Active', address: { street: '', city: '', state: '', zip: '', country: '' } },
-  { id: '6', code: 'NK', name: 'Nitin Kumar', firstName: 'Nitin', lastName: 'Kumar', email: 'nitin.kumar@deboxglobal.com', officeName: 'Select Office', role: 'CEO', userType: 'Operations Person', profile: 'Operations', reportingManager: 'Administrator CRM', status: 'Active', address: { street: '', city: '', state: '', zip: '', country: '' } },
-];
+import { initialUsers } from './mockData';
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>(initialUsers);

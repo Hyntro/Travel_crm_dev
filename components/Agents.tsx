@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Plus, Search, Filter, Briefcase, Mail, Phone, Globe, User, MoreHorizontal, Check, X, Upload, Image as ImageIcon, Download, FileSpreadsheet, History, Save } from 'lucide-react';
 import { Agent } from '../types';
@@ -6,21 +7,21 @@ import { Agent } from '../types';
 // Mock Data updated to match new structure
 const initialAgents: Agent[] = [
   { 
-    id: '1', code: 'AGT001', companyName: 'Global Travels Inc', businessType: 'B2B', 
+    id: '1', code: 'AGT001', companyName: 'Global Travels Inc', contactPerson: 'John Doe', businessType: 'B2B', 
     website: 'www.globaltravels.com', email: 'contact@globaltravels.com', phone: '+1 555-0123', 
     assignedSales: 'Sarah Smith', assignedOps: 'John Doe', status: 'Active', 
     logo: 'https://api.dicebear.com/7.x/identicon/svg?seed=Global',
     nationalityType: 'Foreign', nationalityName: 'American', country: 'USA', marketType: 'International', department: 'Sales', companyType: 'Pvt Ltd'
   },
   { 
-    id: '2', code: 'AGT002', companyName: 'Corporate Fly', businessType: 'Corporate', 
+    id: '2', code: 'AGT002', companyName: 'Corporate Fly', contactPerson: 'Jane Smith', businessType: 'Corporate', 
     website: 'www.corpfly.com', email: 'booking@corpfly.com', phone: '+1 555-0124', 
     assignedSales: 'James Wilson', assignedOps: 'John Doe', status: 'Active', 
     logo: 'https://api.dicebear.com/7.x/identicon/svg?seed=Corp',
     nationalityType: 'Indian', nationalityName: 'Indian', country: 'India', marketType: 'Domestic', department: 'Corporate', companyType: 'LLP'
   },
   { 
-    id: '3', code: 'AGT003', companyName: 'Holiday Makers', businessType: 'Agent', 
+    id: '3', code: 'AGT003', companyName: 'Holiday Makers', contactPerson: 'Alice Wonder', businessType: 'Agent', 
     website: 'www.holidaymakers.net', email: 'info@holidaymakers.net', phone: '+1 555-0125', 
     assignedSales: 'Sarah Smith', assignedOps: 'Mike Ross', status: 'Inactive', 
     logo: 'https://api.dicebear.com/7.x/identicon/svg?seed=Holiday',
@@ -62,6 +63,7 @@ const Agents: React.FC = () => {
       phone: newAgent.phone || '',
       assignedSales: newAgent.assignedSales || 'Unassigned',
       assignedOps: newAgent.assignedOps || 'Unassigned',
+      contactPerson: newAgent.contactPerson || ''
     };
 
     setAgents([...agents, agent]);
@@ -307,6 +309,15 @@ const Agents: React.FC = () => {
                          className="w-full border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-blue-500 border-l-4 border-l-red-500"
                          value={newAgent.phone || ''}
                          onChange={e => setNewAgent({...newAgent, phone: e.target.value})}
+                       />
+                    </div>
+                    <div>
+                       <label className="block text-xs font-semibold text-slate-500 mb-1">Contact Person</label>
+                       <input 
+                         type="text" 
+                         className="w-full border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-blue-500"
+                         value={newAgent.contactPerson || ''}
+                         onChange={e => setNewAgent({...newAgent, contactPerson: e.target.value})}
                        />
                     </div>
                     <div className="col-span-2 grid grid-cols-2 gap-8">

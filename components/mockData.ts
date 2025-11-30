@@ -12,645 +12,249 @@ import {
   ItineraryOverview, EmergencyContact, FitInclusionMaster, GitInclusionMaster,
   ClientBillingInstruction, SupplierBillingInstruction, ProposalSettings,
   Currency, TaxMaster, ExpenseType, ExpenseHead, SacCode, PaymentType, BankMaster,
-  RoleNode, Profile, Department
+  RoleNode, Profile, Department, Agent, User, HotelTariff, TransportationTariff,
+  ActivityTariff
 } from '../types';
 
-export const initialBanks: BankMaster[] = [
-    {
-        id: '1',
-        bankName: 'HDFC Bank',
-        accountType: 'Current',
-        accountNumber: '50200012345678',
-        beneficiaryName: 'Travel Agency Pvt Ltd',
-        branchIfsc: 'HDFC0001234',
-        branchAddress: 'MG Road, Bangalore',
-        status: 'Active',
-        showHide: 'Yes',
-        isDefault: true,
-        createdBy: 'Admin',
-        modifiedBy: 'Admin'
-    }
-];
-
-export const initialCurrencies: Currency[] = [
-    { id: '1', countryId: '1', countryName: 'India', currencyCode: 'INR', currencyName: 'Indian Rupee', exchangeRate: 1.00, status: 'Active' },
-    { id: '2', countryId: '2', countryName: 'USA', currencyCode: 'USD', currencyName: 'US Dollar', exchangeRate: 84.50, status: 'Active' },
-];
-
-export const initialTaxes: TaxMaster[] = [
-    { id: '1', serviceType: 'Hotel', currency: 'INR', slabName: 'GST 12%', taxValue: '12', priceRangeFrom: 1000, priceRangeTo: 7500, isDefault: false, createdBy: 'Admin', status: 'Active' },
-    { id: '2', serviceType: 'Transport', currency: 'INR', slabName: 'GST 5%', taxValue: '5', priceRangeFrom: 0, priceRangeTo: 0, isDefault: true, createdBy: 'Admin', status: 'Active' },
-];
-
-export const initialExpenseHeads: ExpenseHead[] = [
-    { id: '1', name: 'Operational Expenses', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-    { id: '2', name: 'Marketing Expenses', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialExpenseTypes: ExpenseType[] = [
-    { id: '1', expenseHeadId: '1', expenseHeadName: 'Operational Expenses', name: 'Fuel', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-    { id: '2', expenseHeadId: '2', expenseHeadName: 'Marketing Expenses', name: 'Google Ads', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialSacCodes: SacCode[] = [
-    { id: '1', serviceType: 'Tour Package', sacCode: '9985', taxSlab: 'GST 5%', isDefault: true, status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialPaymentTypes: PaymentType[] = [
-    { id: '1', name: 'Bank Transfer', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-    { id: '2', name: 'Credit Card', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-    { id: '3', name: 'Cash', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialClientBillingInstructions: ClientBillingInstruction[] = [
-    {
-        id: '1',
-        name: '<p><strong>Payment Terms:</strong> 50% Advance, Balance before travel.</p>',
-        isDefault: true,
-        status: 'Active'
-    }
-];
-
-export const initialSupplierBillingInstructions: SupplierBillingInstruction[] = [
-    {
-        id: '1',
-        name: '<p><strong>Invoice Submission:</strong> Submit invoices by 5th of every month.</p>',
-        isDefault: true,
-        status: 'Active'
-    }
-];
-
-export const initialProposalSettings: ProposalSettings[] = [
-    {
-        id: '1',
-        proposalNum: 'P027',
-        proposalName: 'Aspire Proposal',
-        backgroundColor: '#d4d0b4',
-        textColor: '#000000',
-        headerImage: '', // URL would go here
-        bannerImage: '', // URL would go here
-        photoDimensions: '750x500',
-        isDefault: false,
-        status: 'Active'
-    },
-    {
-        id: '2',
-        proposalNum: 'P002',
-        proposalName: 'Brief Proposal',
-        backgroundColor: '#4b0082',
-        textColor: '#ffffff',
-        headerImage: '',
-        bannerImage: '',
-        photoDimensions: '800x300',
-        isDefault: true,
-        status: 'Active'
-    }
-];
-
-export const initialRoles: RoleNode = {
-    id: 'root',
-    name: 'TravCRM',
-    children: [
-        {
-            id: 'ceo',
-            name: 'CEO',
-            children: [
-                { id: 'vp', name: 'Vice President' },
-                { 
-                    id: 'mgr', 
-                    name: 'Manager',
-                    children: [
-                        { id: 'ops', name: 'Operation' },
-                        { id: 'sales', name: 'Sales' }
-                    ]
-                }
-            ]
-        }
-    ]
-};
-
-export const initialProfiles: Profile[] = [
-    { id: '1', name: 'Agent', createdAt: '08-04-2022', createdBy: 'Administrator CRM', modifiedBy: 'Administrator CRM', modifiedByDate: '01-07-2024' },
-    { id: '2', name: 'Operations', createdAt: '15-06-2023', createdBy: 'Administrator CRM', modifiedBy: 'Administrator CRM', modifiedByDate: '22-03-2025' },
-    { id: '3', name: 'Technical dashboard', description: 'Software Developer', createdAt: '11-10-2023', createdBy: 'Administrator CRM' },
-    { id: '4', name: 'Sales', createdAt: '31-05-2024', createdBy: 'Administrator CRM', modifiedBy: 'Mohd Rizwan', modifiedByDate: '01-07-2025' },
-    { id: '5', name: 'Sub Admin', createdAt: '15-02-2025', createdBy: 'Administrator CRM', modifiedBy: 'Administrator CRM', modifiedByDate: '15-02-2025' },
-];
-
-export const initialDepartments: Department[] = [
-    { id: '1', name: 'Technical Department', createdBy: 'Administrator CRM', createdAt: '27-02-2021', modifiedBy: 'Administrator CRM', modifiedAt: '01-03-2021' },
-    { id: '2', name: 'Operation', createdBy: 'Administrator CRM', createdAt: '02-04-2021', modifiedBy: 'Mohd Rizwan', modifiedAt: '17-10-2022' },
-    { id: '3', name: 'sales', createdBy: 'Administrator CRM', createdAt: '13-05-2021', modifiedBy: '', modifiedAt: '' },
-    { id: '4', name: 'Sales', createdBy: 'Administrator CRM', createdAt: '13-05-2021', modifiedBy: 'Mohd Rizwan', modifiedAt: '17-10-2022' },
-    { id: '5', name: 'Bangaluru', createdBy: 'Administrator CRM', createdAt: '22-11-2022', modifiedBy: '', modifiedAt: '' },
-];
-
-export const initialFitInclusions: FitInclusionMaster[] = [
-  {
-    id: '1',
-    name: 'PI Proposal',
-    destinationId: 'All',
-    destinationName: 'All',
-    inclusion: `<ul>
-    <li>Daily elaborate buffet breakfast at all the hotels</li>
-    <li>Lunch at a local restaurant in Delhi on Aug.24</li>
-    <li>Welcome dinner at Dhilli OR Indian Accent restaurant on Aug.24</li>
-    <li>Dinner at Esphahan restaurant at Agra on Aug.25</li>
-    <li>Lunch at Aagman Camp on the way to Jaipur on Aug.26</li>
-    <li>Farm-to-table organic lunch at farmhouse in Jaipur on Aug.28</li>
-    <li>Lunch at Panna Villas restaurant local restaurant in Udaipur on Aug.30</li>
-    <li>Culinary session followed by dinner with Noble family in Udaipur on Aug.30</li>
-    </ul>`,
-    exclusion: `<ul>
-    <li>Meeting and assistance on arrival/departure by our representative</li>
-    <li>VIP Meet and assistance upon arrival at Delhi Airport on Aug.23</li>
-    <li>All sightseeing excursions as mentioned in the itinerary.</li>
-    <li>Private Chauffeur-driven, air-conditioned Force Urbania Minivan (8-seater, 2024 model) for all transfers and excursions. Complimentary packaged drinking water and soft beverages in all vehicles</li>
-    <li>Meet and assist at all hotels and airports.</li>
-    </ul>`,
-    status: 'Active',
-    language: 'English',
-    isDefault: false
-  },
-  {
-    id: '2',
-    name: 'Golden Triangle',
-    destinationId: 'd1,d2',
-    destinationName: 'Agra, Jaipur',
-    inclusion: `<ul>
-    <li>Accommodation as per itinerary - Double room on twin sharing basis at all destinations. (We will offer choice to select hotel in 4 star catagory)</li>
-    <li>Daily Breakfast at hotel.</li>
-    <li>Private AC car for all transfers, sightseeing and drives.</li>
-    <li>Assistance on arrival and departure.</li>
-    <li>Monuments Entrance fees during sightseeing</li>
-    <li>Tour Guides.</li>
-    <li>All the taxes included, no hidden charges.</li>
-    </ul>`,
-    exclusion: `<ul>
-    <li>Air fare / train fare.</li>
-    <li>Any other item not specified in the Package Inclusions.</li>
-    <li>Gratuities.</li>
-    <li>Lunch and Dinner</li>
-    </ul>`,
-    status: 'Active',
-    language: 'English',
-    isDefault: false
-  },
-  {
-    id: '3',
-    name: 'Rajasthan Heritage Exploration',
-    destinationId: 'd1',
-    destinationName: 'Jaisalmer, Jodhpur, Udaipur',
-    inclusion: `<ul>
-    <li><strong>Accommodation:</strong> 1 night in a luxury hotel in Delhi, 1 night in a luxury hotel in Agra, 2 nights in a luxury hotel in Jaipur.</li>
-    <li><strong>Meals:</strong> Daily breakfast and dinner, including special regional dinners.</li>
-    <li><strong>Transportation:</strong> Private air-conditioned vehicle with driver for all transfers and sightseeing.</li>
-    <li><strong>Guides:</strong> English-speaking guides for sightseeing in Delhi, Agra, and Jaipur.</li>
-    <li><strong>Entry Fees:</strong> Entry fees to all mentioned attractions.</li>
-    <li><strong>Activities:</strong> Camel ride</li>
-    </ul>`,
-    exclusion: `<ul>
-    <li><strong>International Airfare:</strong> Flights to and from India.</li>
-    <li><strong>Lunch and Additional Meals:</strong> Meals not mentioned in the itinerary.</li>
-    <li><strong>Personal Expenses:</strong> Tips, laundry, phone calls, etc.</li>
-    <li><strong>Optional Activities:</strong> Activities not mentioned in the itinerary.</li>
-    <li><strong>Travel Insurance:</strong> Insurance coverage for the duration of the trip.</li>
-    <li><strong>Visa Fees:</strong> Indian visa fees.</li>
-    </ul>`,
-    status: 'Active',
-    language: 'English',
-    isDefault: false
-  }
-];
-
-export const initialGitInclusions: GitInclusionMaster[] = [
-  {
-    id: '1',
-    name: 'Tiranga',
-    destinationId: 'd2',
-    destinationName: 'Agra, ',
-    inclusion: `<ul>
-    <li>Accommodation as per itinerary - Double room on twin sharing basis at all destinations. (We will offer choice to select hotel in 4 star catagory)</li>
-    <li>Daily Breakfast at hotel.</li>
-    <li>Private AC car for all transfers, sightseeing and drives.</li>
-    <li>Assistance on arrival and departure.</li>
-    <li>Monuments Entrance fees during sightseeing</li>
-    <li>Tour Guides.</li>
-    <li>All the taxes included, no hidden charges.</li>
-    </ul>`,
-    exclusion: `<ul>
-    <li>Accommodation as per itinerary - Double room on twin sharing basis at all destinations. (We will offer choice to select hotel in 4 star catagory)</li>
-    <li>Daily Breakfast at hotel.</li>
-    <li>Private AC car for all transfers, sightseeing and drives.</li>
-    <li>Assistance on arrival and departure.</li>
-    <li>Monuments Entrance fees during sightseeing</li>
-    <li>Tour Guides.</li>
-    <li>All the taxes included, no hidden charges.</li>
-    </ul>`,
-    terms: '',
-    cancellationPolicy: '',
-    remarks: '',
-    status: 'Active',
-    language: 'English',
-    isDefault: false
-  }
-];
-
-export const initialEmergencyContacts: EmergencyContact[] = [
-  {
-    id: 'ec1',
-    contactName: 'raja',
-    countryCode: '+91',
-    mobileNumber: '789456123',
-    mobileNumber2: '2144234211',
-    emailId: 'rajakumar@gmail.com',
-    availableOn: 'Calls & Whatsapp',
-    isProposalContact: true
-  },
-  {
-    id: 'ec2',
-    contactName: 'Naman Dheer',
-    countryCode: '91',
-    mobileNumber: '9897969594',
-    mobileNumber2: '',
-    emailId: '',
-    availableOn: '',
-    isProposalContact: false
-  },
-  {
-    id: 'ec3',
-    contactName: 'Ankit Kumar Sharma',
-    countryCode: '+91',
-    mobileNumber: '08279530775',
-    mobileNumber2: '',
-    emailId: '',
-    availableOn: '',
-    isProposalContact: false
-  }
-];
-
-export const initialTransfers: TransferMaster[] = [
-  {
-    id: 'tm1',
-    name: 'Airport Pick-up',
-    destinationId: 'd1',
-    destinationName: 'Jaipur',
-    transferType: 'Private Transfer',
-    description: 'Pick up from airport to hotel.',
-    internalNote: 'Standard sedan vehicle.',
-    status: 'Active'
-  }
-];
-
-export const initialTransportations: TransportationMaster[] = [
-  {
-    id: 'tr1',
-    name: 'Luxury Bus Service',
-    destinationId: 'd1',
-    destinationName: 'Jaipur',
-    transferType: 'Shuttle Service',
-    description: 'AC Coach for city tour.',
-    internalNote: 'Vendor: ABC Travels',
-    status: 'Active'
-  }
-];
-
 export const initialCountries: Country[] = [
-  { id: '1', name: 'India', shortName: 'IN', code: '+91', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: '2', name: 'USA', shortName: 'US', code: '+1', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: '3', name: 'UK', shortName: 'UK', code: '+44', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '1', name: 'India', shortName: 'IND', code: '+91', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '2', name: 'USA', shortName: 'USA', code: '+1', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '3', name: 'UK', shortName: 'UK', code: '+44', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
 ];
 
 export const initialStates: State[] = [
-  { id: 's1', name: 'Rajasthan', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 's2', name: 'Maharashtra', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '1', name: 'Delhi', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '2', name: 'Maharashtra', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '3', name: 'Uttar Pradesh', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
 ];
 
 export const initialCities: City[] = [
-  { id: 'c1', name: 'Jaipur', stateId: 's1', stateName: 'Rajasthan', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'c2', name: 'Mumbai', stateId: 's2', stateName: 'Maharashtra', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'c3', name: 'Delhi', stateId: 's3', stateName: 'Delhi', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialLeadSources: LeadSource[] = [
-  { id: 'ls1', name: 'Website', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'ls2', name: 'Referral', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialBusinessTypes: BusinessType[] = [
-  { id: 'bt1', name: 'B2B', isDefault: 'Yes', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'bt2', name: 'B2C', isDefault: 'No', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialMarketTypes: MarketType[] = [
-  { id: 'mt1', name: 'Domestic', color: '#ff0000', isDefault: 'Yes', status: 'Active', addedBy: 'Admin', dateAdded: '2023-01-01' },
+  { id: '1', name: 'New Delhi', stateId: '1', stateName: 'Delhi', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '2', name: 'Mumbai', stateId: '2', stateName: 'Maharashtra', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '3', name: 'Agra', stateId: '3', stateName: 'Uttar Pradesh', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '4', name: 'Jaipur', stateId: '3', stateName: 'Rajasthan', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
 ];
 
 export const initialDestinations: Destination[] = [
-  { id: 'd1', serviceCode: 'DST001', name: 'Jaipur', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'd2', serviceCode: 'DST002', name: 'Delhi', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'd3', serviceCode: 'DST003', name: 'Abhaneri', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '1', serviceCode: 'DEST001', name: 'Agra', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '2', serviceCode: 'DEST002', name: 'Delhi', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '3', serviceCode: 'DEST003', name: 'Jaipur', countryId: '1', countryName: 'India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
 ];
 
-export const initialLanguages: Language[] = [
-  { id: 'l1', name: 'English', value: 'en', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+export const initialAgents: Agent[] = [
+  { id: '1', code: 'AGT001', companyName: 'Global Travels Inc', contactPerson: 'John Doe', businessType: 'B2B', website: 'www.globaltravels.com', email: 'contact@globaltravels.com', phone: '+1 555-0123', assignedSales: 'Sarah Smith', assignedOps: 'John Doe', status: 'Active', country: 'USA' },
+  { id: '2', code: 'AGT002', companyName: 'Corporate Fly', contactPerson: 'Jane Smith', businessType: 'Corporate', website: 'www.corpfly.com', email: 'booking@corpfly.com', phone: '+1 555-0124', assignedSales: 'James Wilson', assignedOps: 'John Doe', status: 'Active', country: 'India' }
 ];
 
-export const initialCommissions: Commission[] = [
-  { id: 'cm1', name: 'Standard', percentage: 10, status: 'Active' },
-];
-
-export const initialDivisions: Division[] = [
-  { id: 'div1', name: 'Sales', division: 'Sales', keyword: 'sales', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialSeasons: Season[] = [
-  { id: 'sea1', name: 'Winter', fromDate: '2023-10-01', toDate: '2024-03-31', status: 'Active' },
-];
-
-export const initialTourTypes: TourType[] = [
-  { id: 'tt1', name: 'Adventure', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'tt2', name: 'Leisure', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialRoomTypes: RoomType[] = [
-  { id: 'rt1', name: 'Standard', info: 'Basic room', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'rt2', name: 'Deluxe', info: 'Better view', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialAmenities: Amenity[] = [
-  { id: 'am1', name: 'WiFi', image: '', isDefault: true, status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialHotelCategories: HotelCategory[] = [
-  { id: 'hc1', categoryName: '3 Star', starCategory: '3 Star', keyword: '3star', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'hc2', categoryName: '4 Star', starCategory: '4 Star', keyword: '4star', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'hc3', categoryName: '5 Star', starCategory: '5 Star', keyword: '5star', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialHotelTypes: HotelType[] = [
-  { id: 'ht1', name: 'Business', keyword: 'business', isHouseBoat: 'No', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialHotelMealPlans: HotelMealPlan[] = [
-  { id: 'hmp1', name: 'CP', voucherName: 'Continental Plan', isDefault: true, status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-];
-
-export const initialWeekends: Weekend[] = [
-  { id: 'w1', name: 'Standard Weekend', days: 'Saturday, Sunday', status: 'Active' },
+export const initialUsers: User[] = [
+  { id: '1', name: 'Sarah Smith', email: 'sarah@example.com', role: 'Sales', status: 'Active', address: { street: '', city: '', state: '', zip: '', country: '' } },
+  { id: '2', name: 'John Doe', email: 'john@example.com', role: 'Operations', status: 'Active', address: { street: '', city: '', state: '', zip: '', country: '' } }
 ];
 
 export const initialHotels: HotelMaster[] = [
-  {
-    id: 'h1', name: 'Hotel Royal', chain: 'Independent', destination: 'Jaipur', category: '4 Star', type: 'Business',
-    email: 'info@royal.com', website: 'www.royal.com', weekendDays: 'SS', checkInTime: '12:00', checkOutTime: '11:00',
-    amenities: ['WiFi', 'Pool'], roomTypes: ['Deluxe'], selfSupplier: 'Yes', country: 'India', state: 'Rajasthan', city: 'Jaipur',
-    pinCode: '302001', phone: '1234567890', address: 'Main Road', gstn: 'GST123', status: 'Active', contacts: []
-  }
+  { id: 'h1', name: 'Taj Mahal Hotel', chain: 'Taj', destination: 'Agra', category: '5 Star', type: 'Luxury', email: 'taj@example.com', website: 'www.tajhotels.com', weekendDays: 'SS', checkInTime: '14:00', checkOutTime: '11:00', amenities: ['Wifi', 'Pool'], roomTypes: ['Deluxe', 'Suite'], selfSupplier: 'Yes', country: 'India', state: 'UP', city: 'Agra', pinCode: '282001', phone: '1234567890', address: 'Agra', gstn: 'GST123', status: 'Active', contacts: [] }
 ];
 
-export const mockAmenitiesList = ['WiFi', 'Pool', 'Gym', 'Spa', 'Parking', 'Restaurant'];
-export const mockRoomTypesList = ['Standard', 'Deluxe', 'Suite', 'Family Room'];
-
-export const initialHotelChains: HotelChain[] = [
-  { id: 'chain1', name: 'Taj Hotels', location: 'Mumbai', status: 'Active', contacts: [], createdBy: 'Admin', modifiedBy: 'Admin' }
-];
-
-export const initialRestaurants: Restaurant[] = [
-  { 
-    id: 'r1', name: 'Spice Garden', destination: 'Jaipur', address: 'Civil Lines', status: 'Active', 
-    contact: { title: 'Mr', name: 'Raj', designation: 'Manager', countryCode: '+91', phone1: '9876543210', email: 'raj@spice.com' } 
-  }
-];
-
-export const initialRestaurantMealPlans: RestaurantMealPlan[] = [
-  { id: 'rmp1', name: 'Buffet Lunch', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
-];
-
-export const initialMonuments: Monument[] = [
-  { id: 'm1', serviceCode: 'MON001', name: 'Amber Fort', destinationId: 'd1', destinationName: 'Jaipur', status: 'Active' }
-];
-
-export const initialMonumentPackages: MonumentPackage[] = [
-  { id: 'mp1', name: 'Jaipur Heritage', destinationId: 'd1', destinationName: 'Jaipur', serviceType: 'Entrance', services: [], status: 'Active' }
-];
-
-export const initialActivities: SightseeingActivity[] = [
-  { id: 'a1', name: 'Elephant Ride', destinationId: 'd1' }
-];
-
-export const initialActivitiesMasterList: ActivityMaster[] = [
-  { id: 'act1', serviceCode: 'ACT001', name: 'Hot Air Balloon', type: 'Activity', destinationId: 'd1', destinationName: 'Jaipur', supplierName: 'Sky High', isDefault: 'No', status: 'Active' }
-];
-
-export const initialEnroutes: Enroute[] = [
-  { id: 'e1', serviceCode: 'ENR001', name: 'Midway Treat', supplierName: 'Highway Inn', gstSlab: '5%', currency: 'INR', isDefault: 'No', destinationId: 'd1', destinationName: 'Jaipur', status: 'Active' }
-];
-
-export const initialTransferTypes: TransferType[] = [
-  { id: 'tt1', name: 'Airport Transfer', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
-];
-
-export const initialCityDistances: CityDistance[] = [
-  { 
-    id: 'cd1', 
-    fromDestinationId: 'd1', 
-    fromDestinationName: 'Jaipur', 
-    toDestinations: [
-      { destinationId: 'd2', destinationName: 'Delhi', km: 280 }
-    ],
-    status: 'Active' 
-  }
-];
-
-export const initialVehicleTypes: VehicleType[] = [
-  { 
-    id: 'vt1', 
-    name: 'Sedan', 
-    capacity: '4', 
-    status: 'Active', 
-    createdBy: 'Admin', 
-    modifiedBy: 'Admin' 
-  },
-  { 
-    id: 'vt2', 
-    name: 'SUV', 
-    capacity: '6', 
-    status: 'Active', 
-    createdBy: 'Admin', 
-    modifiedBy: 'Admin' 
-  }
-];
-
-export const initialDrivers: Driver[] = [
-  {
-    id: 'dr1',
-    name: 'Ramesh Kumar',
-    dob: '1985-05-15',
-    licenseNumber: 'RJ1420100055',
-    validUpto: '2025-05-15',
-    mobile: '9876543210',
-    status: 'Active',
-    vehicleType: 'Sedan'
-  }
-];
-
-export const initialFleets: Fleet[] = [
-  {
-    id: 'fl1',
-    vehicleType: 'Sedan',
-    brandName: 'Toyota Etios',
-    registrationNumber: 'RJ14 CA 1234',
-    ownerName: 'Travel Agency',
-    fuelType: 'Diesel',
-    assignedDriver: 'Ramesh Kumar',
-    status: 'Active'
-  }
-];
-
-export const initialAirlines: Airline[] = [
-  { id: '1', name: 'Indigo', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: '2', name: 'Air India', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
-];
-
-export const initialFlightSeatClasses: FlightSeatClass[] = [
-  { id: 'fsc1', name: 'Economy', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
-  { id: 'fsc2', name: 'Business', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
-];
-
-export const initialFlights: FlightMaster[] = [
-  {
-    id: 'fl1',
-    airlineId: '1',
-    airlineName: 'Indigo',
-    flightNumber: '6E 202',
-    fromDestinationId: 'd1',
-    fromDestinationName: 'Jaipur',
-    toDestinationId: 'd2',
-    toDestinationName: 'Delhi',
-    departureTime: '10:00',
-    arrivalTime: '11:00',
-    daysOfOperation: 'Daily',
-    status: 'Active'
-  }
-];
-
-export const initialTrains: TrainMaster[] = [
-  {
-    id: 'tr1',
-    name: 'Dibrugarh',
-    number: '12423 / 12424, 20503 / 20504',
-    fromDestinationId: 'd2',
-    fromDestinationName: 'Delhi',
-    toDestinationId: 'd1',
-    toDestinationName: 'Jaipur',
-    daysOfOperation: 'Daily',
-    cancellationPolicy: '',
-    remarks: '',
-    status: 'Active'
-  }
-];
-
-export const initialGuides: Guide[] = [
+export const initialTariffs: HotelTariff[] = [
     {
-        id: 'g1',
-        name: 'Suresh Sharma',
-        serviceType: 'Guide',
-        mobile: '9876543210',
-        email: 'suresh@guide.com',
-        languages: 'English, Hindi, French',
-        destinationName: 'Jaipur',
-        status: 'Active',
-        rating: '5 Star',
-        address: 'Hawa Mahal Road, Jaipur'
+        id: 't1', hotelId: 'h1', marketType: 'General', supplierName: 'Direct', paxType: 'FIT', tariffType: 'Normal', seasonType: 'Summer', seasonYear: '2025',
+        validFrom: '2025-01-01', validTo: '2025-12-31', status: 'Active', roomType: 'Deluxe', mealPlan: 'CP', currency: 'INR',
+        rates: { single: 10000, double: 12000, extraBedAdult: 3000, extraBedChild: 1500, childWithBed: 2000, tacPercentage: 10, roomTaxSlab: '12%', mealTaxSlab: '5%', markupType: '%', markupCost: 10 },
+        mealRates: { breakfastAdult: 500, lunchAdult: 800, dinnerAdult: 1000, breakfastChild: 300, lunchChild: 500, dinnerChild: 700 }
     }
 ];
 
-export const initialGuideTariffs: GuideTariff[] = [
-  {
-    id: 'gt1',
-    guideId: 'g1',
-    supplierName: '1589 Gen X',
-    validFrom: '09-09-2024',
-    validTo: '26-09-2024',
-    paxRange: 'All',
-    dayType: 'Half Day',
-    universalCost: 'Yes',
-    currency: 'AED',
-    serviceCost: 50,
-    languageAllowance: 0,
-    otherCost: 0,
-    gstSlab: 'Slab 5',
-    status: 'Active'
-  }
+export const initialItineraryInfos: ItineraryInfoMaster[] = [
+  { id: '1', fromDestinationId: '2', fromDestinationName: 'Delhi', toDestinationId: '1', toDestinationName: 'Agra', transferMode: 'Surface', title: 'Delhi to Agra by Car', description: 'Drive to Agra via Yamuna Expressway.', status: 'Active' }
+];
+
+export const initialActivitiesMasterList: ActivityMaster[] = [
+  { id: '1', serviceCode: 'ACT001', name: 'Taj Mahal Visit', type: 'Activity', destinationId: '1', destinationName: 'Agra', supplierName: 'Self', isDefault: 'No', status: 'Active', language: 'English', weekendDays: 'FSS', description: 'Visit the Taj Mahal.' },
+  { id: '2', serviceCode: 'ACT002', name: 'Red Fort Visit', type: 'Activity', destinationId: '2', destinationName: 'Delhi', supplierName: 'Self', isDefault: 'No', status: 'Active', language: 'English', weekendDays: 'SS', description: 'Visit the Red Fort.' }
+];
+
+export const initialActivities = initialActivitiesMasterList;
+
+export const initialActivityTariffs: ActivityTariff[] = [
+  { id: '1', activityId: '1', supplierName: 'Self', validFrom: '2025-01-01', validTo: '2025-12-31', currency: 'INR', serviceName: 'Taj Mahal Visit', fromPax: 1, toPax: 10, costType: 'Per Person', perPaxCost: 1500, status: 'Active', taxSlab: '0%', remarks: '' }
+];
+
+export const initialTransfers: TransferMaster[] = [
+  { id: '1', name: 'Agra Station Transfer', destinationId: '1', destinationName: 'Agra', transferType: 'Station', description: 'Pick up from station', internalNote: '', status: 'Active' }
+];
+
+export const initialRestaurants: Restaurant[] = [
+  { id: '1', name: 'Pinch of Spice', destination: 'Agra', address: 'Agra', status: 'Active', contact: { title: 'Mr', name: 'Manager', designation: 'Manager', countryCode: '+91', phone1: '9876543210', email: 'pos@example.com' } }
 ];
 
 export const initialAdditionalRequirements: AdditionalRequirement[] = [
-  {
-    id: 'ar1',
-    serviceType: 'Visa',
-    name: 'Indian E-Visa',
-    destinationId: 'd1',
-    destinationName: 'India',
-    currency: 'USD',
-    costType: 'Per Person',
-    adultCost: 25,
-    childCost: 25,
-    groupCost: 0,
-    displayName: 'E-Visa Fees',
-    showInProposal: 'Yes',
-    status: 'Active',
-    description: 'Standard e-visa fee',
-    language: 'English',
-    createdBy: 'Admin'
-  }
+  { id: '1', serviceType: 'Visa', name: 'Indian Tourist Visa', destinationId: '1', destinationName: 'Agra', currency: 'USD', costType: 'Per Person', displayName: 'Visa Fee', showInProposal: 'Yes', status: 'Active', createdBy: 'Admin' }
 ];
 
-export const initialItineraryInfos: ItineraryInfoMaster[] = [
-  {
-    id: 'ii1',
-    fromDestinationId: 'd2',
-    fromDestinationName: 'Delhi',
-    toDestinationId: 'd1',
-    toDestinationName: 'Jaipur',
-    transferMode: 'Surface',
-    title: 'Drive to Jaipur',
-    description: 'Scenic drive from Delhi to Jaipur via NH48.',
-    status: 'Active'
-  }
+export const initialHotelCategories: HotelCategory[] = [
+  { id: '1', categoryName: '5 Star', starCategory: '5 Star', keyword: 'Luxury', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '2', categoryName: '4 Star', starCategory: '4 Star', keyword: 'Premium', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
 ];
 
-export const initialItineraryOverviews: ItineraryOverview[] = [
-  {
-    id: '1',
-    name: 'Aspire Magic',
-    overviewInfo: 'The Red Fort, also known as Lal Qila...',
-    highlightInfo: 'The Red Fort, also known as Lal Qila...',
-    language: 'English',
-    status: 'Active'
-  },
-  {
-    id: '2',
-    name: 'Rajasthan Heritage Exploration',
-    overviewInfo: 'Experience the regal splendor...',
-    highlightInfo: 'Udaipur: Discover the romantic city...',
-    language: 'English',
-    status: 'Active'
-  },
-  {
-    id: '3',
-    name: 'Golden Trangle',
-    overviewInfo: 'Golden Triangle Tour Itinerary...',
-    highlightInfo: 'Dear Clients, if you are planning...',
-    language: 'English',
-    status: 'Active'
-  },
-  {
-    id: '4',
-    name: 'Agra',
-    overviewInfo: 'it is for example',
-    highlightInfo: '',
-    language: 'English',
-    status: 'In Active'
-  }
+export const initialHotelTypes: HotelType[] = [
+  { id: '1', name: 'Heritage', keyword: 'Heritage', isHouseBoat: 'No', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+  { id: '2', name: 'Business', keyword: 'Business', isHouseBoat: 'No', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialHotelChains: HotelChain[] = [
+    { id: '1', name: 'Taj Hotels', location: 'Mumbai', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin', contacts: [] }
+];
+
+export const initialHotelMealPlans: HotelMealPlan[] = [
+    { id: '1', name: 'CP', voucherName: 'Breakfast Only', isDefault: true, status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialRoomTypes: RoomType[] = [
+    { id: '1', name: 'Deluxe', info: 'Standard Deluxe Room', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+    { id: '2', name: 'Suite', info: 'Luxury Suite', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialAmenities: Amenity[] = [
+    { id: '1', name: 'Wifi', image: '', isDefault: true, status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+    { id: '2', name: 'Pool', image: '', isDefault: false, status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialWeekends: Weekend[] = [
+    { id: '1', name: 'Standard', days: 'Saturday, Sunday', status: 'Active' }
+];
+
+export const initialRestaurantMealPlans: RestaurantMealPlan[] = [
+    { id: '1', name: 'Buffet Lunch', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialMonuments: Monument[] = [
+    { id: '1', serviceCode: 'MON001', name: 'Taj Mahal', destinationId: '1', destinationName: 'Agra', status: 'Active' }
+];
+
+export const initialMonumentPackages: MonumentPackage[] = [];
+
+export const initialEnroutes: Enroute[] = [];
+
+export const initialTransferTypes: TransferType[] = [
+    { id: '1', name: 'Airport', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialTransportations: TransportationMaster[] = [
+    { id: '1', name: 'Innova Crysta', destinationId: '1', destinationName: 'Agra', transferType: 'Private', description: '', internalNote: '', status: 'Active' }
+];
+
+export const initialCityDistances: CityDistance[] = [];
+
+export const initialVehicleTypes: VehicleType[] = [
+    { id: '1', name: 'Sedan', capacity: '4', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+    { id: '2', name: 'SUV', capacity: '6', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialDrivers: Driver[] = [];
+export const initialFleets: Fleet[] = [];
+
+export const initialAirlines: Airline[] = [
+    { id: '1', name: 'Indigo', status: 'Active' },
+    { id: '2', name: 'Air India', status: 'Active' }
+];
+
+export const initialFlightSeatClasses: FlightSeatClass[] = [
+    { id: '1', name: 'Economy', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+    { id: '2', name: 'Business', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialFlights: FlightMaster[] = [];
+
+export const initialTrains: TrainMaster[] = [];
+
+export const initialGuides: Guide[] = [
+    { id: '1', name: 'Rajesh Kumar', serviceType: 'Guide', destinationName: 'Agra', mobile: '9876543210', email: 'rajesh@example.com', status: 'Active' }
+];
+
+export const initialGuideTariffs: GuideTariff[] = [
+    { id: '1', guideId: '1', supplierName: 'Direct', validFrom: '2025-01-01', validTo: '2025-12-31', paxRange: '1-5', dayType: 'Full Day', universalCost: 'Yes', currency: 'INR', serviceCost: 2000, languageAllowance: 500, otherCost: 0, gstSlab: '0', status: 'Active' }
+];
+
+export const initialItineraryOverviews: ItineraryOverview[] = [];
+
+export const initialEmergencyContacts: EmergencyContact[] = [];
+
+export const initialFitInclusions: FitInclusionMaster[] = [];
+export const initialGitInclusions: GitInclusionMaster[] = [];
+
+export const initialClientBillingInstructions: ClientBillingInstruction[] = [];
+export const initialSupplierBillingInstructions: SupplierBillingInstruction[] = [];
+
+export const initialProposalSettings: ProposalSettings[] = [];
+
+export const initialCurrencies: Currency[] = [
+    { id: '1', countryId: '1', countryName: 'India', currencyCode: 'INR', currencyName: 'Indian Rupee', status: 'Active' },
+    { id: '2', countryId: '2', countryName: 'USA', currencyCode: 'USD', currencyName: 'US Dollar', status: 'Active' }
+];
+
+export const initialTaxes: TaxMaster[] = [
+    { id: '1', serviceType: 'Hotel', slabName: 'GST 12%', taxValue: '12', status: 'Active', createdBy: 'Admin' }
+];
+
+export const initialExpenseTypes: ExpenseType[] = [];
+export const initialExpenseHeads: ExpenseHead[] = [];
+export const initialSacCodes: SacCode[] = [];
+export const initialPaymentTypes: PaymentType[] = [];
+export const initialBanks: BankMaster[] = [];
+
+export const initialRoles: RoleNode = { id: 'root', name: 'TravCRM', children: [ { id: 'ceo', name: 'CEO', children: [ { id: 'vp', name: 'Vice President', children: [ { id: 'mgr', name: 'Manager', children: [ { id: 'ops', name: 'Operation' }, { id: 'sales', name: 'Sales' } ] } ] } ] } ] } ] };
+
+export const initialProfiles: Profile[] = [
+    { id: '1', name: 'Administrator', description: 'Full Access', createdBy: 'System', createdAt: '01-01-2024' }
+];
+
+export const initialDepartments: Department[] = [
+    { id: '1', name: 'Sales', createdBy: 'System', createdAt: '01-01-2024', modifiedBy: '', modifiedAt: '' },
+    { id: '2', name: 'Operations', createdBy: 'System', createdAt: '01-01-2024', modifiedBy: '', modifiedAt: '' }
+];
+
+export const initialLeadSources: LeadSource[] = [
+    { id: '1', name: 'Website', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' },
+    { id: '2', name: 'Referral', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialBusinessTypes: BusinessType[] = [
+    { id: '1', name: 'B2B', isDefault: 'Yes', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialMarketTypes: MarketType[] = [
+    { id: '1', name: 'Inbound', color: '#3b82f6', isDefault: 'Yes', status: 'Active', addedBy: 'Admin', dateAdded: '2024-01-01' }
+];
+
+export const initialLanguages: Language[] = [
+    { id: '1', name: 'English', value: 'en', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialCommissions: Commission[] = [
+    { id: '1', name: 'Standard', percentage: 10, status: 'Active' }
+];
+
+export const initialDivisions: Division[] = [
+    { id: '1', division: 'Main', keyword: 'main', name: 'Main Division', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const initialSeasons: Season[] = [
+    { id: '1', name: 'Summer', fromDate: '2025-04-01', toDate: '2025-09-30', status: 'Active' }
+];
+
+export const initialTourTypes: TourType[] = [
+    { id: '1', name: 'Leisure', status: 'Active', createdBy: 'Admin', modifiedBy: 'Admin' }
+];
+
+export const mockAmenitiesList = ['Wifi', 'Pool', 'Spa', 'Gym', 'Parking', 'Bar', 'Restaurant'];
+export const mockRoomTypesList = ['Standard', 'Deluxe', 'Suite', 'Family Room'];
+
+export const initialPaxSlabs = [
+    '1 to 5',
+    '6 to 10',
+    '11 to 15',
+    '16 to 20',
+    '21 to 30',
+    '31 to 50',
+    '51 to 100'
 ];

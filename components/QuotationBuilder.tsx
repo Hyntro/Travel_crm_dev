@@ -63,21 +63,72 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({ embedded = false, i
 
   // Modal State
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
-  const [activeServiceType, setActiveServiceType] = useState<'hotel' | 'flight' | 'transport' | 'activity' | 'restaurant' | 'additional'>('hotel');
+  const [activeServiceType, setActiveServiceType] = useState<'hotel' | 'flight' | 'transport' | 'activity' | 'restaurant' | 'additional' | 'itinerary-info' | 'guide'>('hotel');
   const [activeDayId, setActiveDayId] = useState<string | null>(null);
   const [showCostSheetPreview, setShowCostSheetPreview] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   // Handlers
-  const handleOpenServiceModal = (dayId: string, type: 'hotel' | 'flight' | 'transport' | 'activity' | 'restaurant' | 'additional') => {
+  const handleOpenServiceModal = (dayId: string, type: 'hotel' | 'flight' | 'transport' | 'activity' | 'restaurant' | 'additional' | 'itinerary-info' | 'guide') => {
     setActiveDayId(dayId);
     setActiveServiceType(type);
     setServiceModalOpen(true);
   };
 
   const handleAddService = (serviceData: any) => {
-    // Logic to add service to state (simplified)
-    console.log("Adding Service", serviceData);
+    if (!activeDayId) return;
+
+    setDays(prevDays => prevDays.map(day => {
+      if (day.id === activeDayId) {
+        // Handle Itinerary Info Update
+        if (activeServiceType === 'itinerary-info') {
+             return {
+                 ...day,
+                 description: serviceData.description
+             };
+        }
+
+        // Handle Service Additions
+        const newDay = { ...day };
+        const newItem = { ...serviceData, id: Math.random().toString() };
+
+        switch (activeServiceType) {
+          case 'hotel':
+            newDay.itineraryHotels = [...newDay.itineraryHotels, {
+                ...newItem,
+                hotelName: newItem.name,
+                cost: newItem.cost || 0
+            }];
+            newDay.services.hotel = true;
+            break;
+          case 'flight':
+            newDay.itineraryFlights = [...newDay.itineraryFlights, { ...newItem, carrierName: newItem.name }];
+            newDay.services.flight = true;
+            break;
+          case 'transport':
+             newDay.itineraryTransports = [...newDay.itineraryTransports, { ...newItem, vehicleType: newItem.name }];
+             newDay.services.transfer = true;
+             break;
+          case 'activity':
+             newDay.itineraryActivities = [...newDay.itineraryActivities, { ...newItem, serviceName: newItem.name, type: 'Activity' }];
+             newDay.services.activity = true;
+             break;
+          case 'guide':
+             newDay.itineraryActivities = [...newDay.itineraryActivities, { ...newItem, serviceName: newItem.name, type: 'Guide' }];
+             newDay.services.guide = true;
+             break;
+          case 'restaurant':
+             newDay.itineraryRestaurants = [...newDay.itineraryRestaurants, { ...newItem, restaurantName: newItem.name }];
+             break;
+          case 'additional':
+             newDay.itineraryAdditionals = [...newDay.itineraryAdditionals, { ...newItem, serviceName: newItem.name }];
+             break;
+        }
+        return newDay;
+      }
+      return day;
+    }));
+
     setServiceModalOpen(false);
   };
 
@@ -138,9 +189,9 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({ embedded = false, i
                           </div>
                           {/* Specific Action Buttons */}
                           <div className="flex flex-wrap gap-1">
-                              <button className="bg-orange-400 hover:bg-orange-500 text-white text-[10px] px-2 py-1 rounded font-bold">+ Itinerary Info</button>
+                              <button onClick={() => handleOpenServiceModal(day.id, 'itinerary-info')} className="bg-orange-400 hover:bg-orange-500 text-white text-[10px] px-2 py-1 rounded font-bold">+ Itinerary Info</button>
                               <button onClick={() => handleOpenServiceModal(day.id, 'hotel')} className="bg-orange-400 hover:bg-orange-500 text-white text-[10px] px-2 py-1 rounded font-bold flex items-center gap-1">+ Hotel</button>
-                              <button onClick={() => handleOpenServiceModal(day.id, 'activity')} className="bg-orange-400 hover:bg-orange-500 text-white text-[10px] px-2 py-1 rounded font-bold">+ Guide</button>
+                              <button onClick={() => handleOpenServiceModal(day.id, 'guide')} className="bg-orange-400 hover:bg-orange-500 text-white text-[10px] px-2 py-1 rounded font-bold">+ Guide</button>
                               <button onClick={() => handleOpenServiceModal(day.id, 'activity')} className="bg-orange-400 hover:bg-orange-500 text-white text-[10px] px-2 py-1 rounded font-bold">+ Activity</button>
                               <button onClick={() => handleOpenServiceModal(day.id, 'activity')} className="bg-orange-400 hover:bg-orange-500 text-white text-[10px] px-2 py-1 rounded font-bold">+ Monument</button>
                               <button onClick={() => handleOpenServiceModal(day.id, 'transport')} className="bg-orange-400 hover:bg-orange-500 text-white text-[10px] px-2 py-1 rounded font-bold">+ Transfer</button>
@@ -153,9 +204,41 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({ embedded = false, i
                           </div>
                       </div>
                       <div className="p-2">
-                          <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer w-fit">
-                              <input type="checkbox" className="rounded text-blue-600"/> Destination Description
-                          </label>
+                          <div className="mb-2 p-2 bg-slate-50 text-sm text-slate-700 border border-slate-100 rounded min-h-[40px]">
+                              {day.description || 'No itinerary description.'}
+                          </div>
+                          
+                          {/* Selected Services Display */}
+                          {(day.itineraryHotels.length > 0 || day.itineraryActivities.length > 0 || day.itineraryTransports.length > 0) && (
+                              <div className="mt-2 space-y-1">
+                                  {day.itineraryHotels.map((h, idx) => (
+                                      <div key={idx} className="flex justify-between items-center text-xs bg-blue-50 p-2 rounded border border-blue-100">
+                                          <div className="flex items-center gap-2">
+                                              <Hotel size={14} className="text-blue-600"/>
+                                              <span className="font-bold text-blue-800">{h.hotelName}</span>
+                                              <span className="text-slate-500">({h.roomType}, {h.mealPlan})</span>
+                                          </div>
+                                          <div className="flex items-center gap-3">
+                                              <span className="font-bold text-slate-700">{h.cost} INR</span>
+                                              <Trash2 size={12} className="text-red-400 cursor-pointer hover:text-red-600"/>
+                                          </div>
+                                      </div>
+                                  ))}
+                                  {day.itineraryActivities.map((a, idx) => (
+                                      <div key={idx} className="flex justify-between items-center text-xs bg-green-50 p-2 rounded border border-green-100">
+                                          <div className="flex items-center gap-2">
+                                              <Flag size={14} className="text-green-600"/>
+                                              <span className="font-bold text-green-800">{a.serviceName}</span>
+                                              <span className="text-slate-500">({a.type})</span>
+                                          </div>
+                                          <div className="flex items-center gap-3">
+                                              <span className="font-bold text-slate-700">{a.cost} INR</span>
+                                              <Trash2 size={12} className="text-red-400 cursor-pointer hover:text-red-600"/>
+                                          </div>
+                                      </div>
+                                  ))}
+                              </div>
+                          )}
                       </div>
                   </div>
               ))}

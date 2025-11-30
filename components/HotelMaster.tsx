@@ -1,38 +1,13 @@
 
+
 import React, { useState } from 'react';
 import { ArrowLeft, Plus, Search, Download, Upload, History, FileSpreadsheet, Eye, Edit, Trash2, X, Image as ImageIcon, MapPin, Save, Calendar } from 'lucide-react';
 import { HotelMaster, HotelContact, HotelTariff } from '../types';
-import { initialHotels, initialCountries, initialStates, initialCities, mockAmenitiesList, mockRoomTypesList, initialHotelCategories, initialHotelTypes, initialDestinations } from './mockData';
+import { initialHotels, initialCountries, initialStates, initialCities, mockAmenitiesList, mockRoomTypesList, initialHotelCategories, initialHotelTypes, initialDestinations, initialTariffs } from './mockData';
 
 interface HotelMasterProps {
   onBack: () => void;
 }
-
-// Mock initial tariffs
-const initialTariffs: HotelTariff[] = [
-  {
-    id: 't1',
-    hotelId: 'h1',
-    marketType: 'General',
-    supplierName: 'Dolphin Apt',
-    paxType: 'GIT',
-    tariffType: 'Normal',
-    seasonType: 'Winter',
-    seasonYear: '2021',
-    validFrom: '01-10-2021',
-    validTo: '30-03-2022',
-    status: 'Active',
-    roomType: 'Deluxe room',
-    mealPlan: 'CP',
-    currency: 'INR',
-    rates: {
-        single: 32, double: 32, extraBedAdult: 0, extraBedChild: 0, childWithBed: 0,
-        tacPercentage: 0, roomTaxSlab: 'TAXINC', mealTaxSlab: 'GSTInclusive', markupType: '%', markupCost: 0
-    },
-    mealRates: { breakfastAdult: 0, lunchAdult: 0, dinnerAdult: 0, breakfastChild: 0, lunchChild: 0, dinnerChild: 0 },
-    remarks: ''
-  }
-];
 
 const HotelMaster: React.FC<HotelMasterProps> = ({ onBack }) => {
   const [hotels, setHotels] = useState<HotelMaster[]>(initialHotels);
@@ -848,8 +823,8 @@ const HotelMaster: React.FC<HotelMasterProps> = ({ onBack }) => {
             <div>
                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Destination</label>
                <select 
-                 value={filterDestination}
-                 onChange={e => setFilterDestination(e.target.value)}
+                 value={filterDestination} 
+                 onChange={e => setFilterDestination(e.target.value)} 
                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-blue-500"
                >
                   <option value="All">All</option>
@@ -859,8 +834,8 @@ const HotelMaster: React.FC<HotelMasterProps> = ({ onBack }) => {
             <div>
                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Hotel Name</label>
                <select 
-                 value={filterHotelName}
-                 onChange={e => setFilterHotelName(e.target.value)}
+                 value={filterHotelName} 
+                 onChange={e => setFilterHotelName(e.target.value)} 
                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-blue-500"
                >
                   <option value="All">All</option>

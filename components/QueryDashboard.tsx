@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, Calendar, Filter, Plus, FileText, ArrowRight, Briefcase, Globe, User, Phone, Mail, Clock, Hotel, MapPin, Save, X, AlignLeft, Users, Bed, Layers, Trash2 } from 'lucide-react';
-import { TravelQuery, QueryStatus, QueryPriority } from '../types';
+import { TravelQuery, QueryStatus, QueryPriority, Agent } from '../types';
 import QueryDetail from './QueryDetail';
-import { initialCities } from './mockData';
+import { initialCities, initialAgents, initialUsers } from './mockData';
 
 // Mock Data
 const initialQueries: TravelQuery[] = [
@@ -39,6 +40,10 @@ const QueryDashboard: React.FC = () => {
   const [view, setView] = useState<'list' | 'add' | 'detail'>('list');
   const [queries, setQueries] = useState<TravelQuery[]>(initialQueries);
   const [selectedQuery, setSelectedQuery] = useState<TravelQuery | null>(null);
+
+  // Agent Search State
+  const [agentSuggestions, setAgentSuggestions] = useState<Agent[]>([]);
+  const [showAgentSuggestions, setShowAgentSuggestions] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -146,6 +151,32 @@ const QueryDashboard: React.FC = () => {
     setFormData({ ...formData, itinerary: reIndexed });
   };
 
+  const handleClientNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData({ ...formData, clientName: value });
+
+    if (value.length > 0) {
+        const filtered = initialAgents.filter(a => 
+            a.companyName.toLowerCase().includes(value.toLowerCase())
+        );
+        setAgentSuggestions(filtered);
+        setShowAgentSuggestions(true);
+    } else {
+        setShowAgentSuggestions(false);
+    }
+  };
+
+  const handleSelectAgent = (agent: Agent) => {
+    setFormData({
+        ...formData,
+        clientName: agent.companyName,
+        email: agent.email,
+        contactNumber: agent.phone,
+        contactPerson: agent.contactPerson || ''
+    });
+    setShowAgentSuggestions(false);
+  };
+
   const handleSave = () => {
     const newQuery: TravelQuery = {
         id: `DB25-26/${Math.floor(100000 + Math.random() * 900000)}`,
@@ -224,10 +255,32 @@ const QueryDashboard: React.FC = () => {
                     
                     <div>
                        <label className="block text-xs font-semibold text-slate-500 mb-1">Name / Client Name</label>
-                       <div className="flex gap-2">
+                       <div className="flex gap-2 relative">
                           <div className="relative flex-1">
                              <User size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"/>
-                             <input type="text" className="w-full pl-8 pr-3 py-2 border border-slate-300 rounded text-sm focus:border-orange-400 outline-none" placeholder="Company or Client Name" value={formData.clientName} onChange={e => setFormData({...formData, clientName: e.target.value})} />
+                             <input 
+                               type="text" 
+                               className="w-full pl-8 pr-3 py-2 border border-slate-300 rounded text-sm focus:border-orange-400 outline-none" 
+                               placeholder="Company or Client Name" 
+                               value={formData.clientName} 
+                               onChange={handleClientNameChange} 
+                               onBlur={() => setTimeout(() => setShowAgentSuggestions(false), 200)}
+                             />
+                             {/* Auto-complete Dropdown */}
+                             {showAgentSuggestions && agentSuggestions.length > 0 && (
+                                 <div className="absolute z-50 w-full bg-white border border-slate-200 rounded shadow-lg mt-1 max-h-40 overflow-y-auto">
+                                     {agentSuggestions.map(agent => (
+                                         <div 
+                                            key={agent.id} 
+                                            className="px-3 py-2 text-xs hover:bg-slate-50 cursor-pointer flex flex-col"
+                                            onMouseDown={() => handleSelectAgent(agent)}
+                                         >
+                                            <span className="font-bold text-slate-800">{agent.companyName}</span>
+                                            <span className="text-slate-500">{agent.email}</span>
+                                         </div>
+                                     ))}
+                                 </div>
+                             )}
                           </div>
                           <button className="bg-purple-500 text-white px-3 py-1 rounded text-xs font-bold">+Add</button>
                        </div>
@@ -431,12 +484,30 @@ const QueryDashboard: React.FC = () => {
                  <div className="p-5 space-y-4">
                     <div>
                        <label className="block text-xs font-semibold text-slate-500 mb-1">Sales Person</label>
-                       <input type="text" placeholder="Search User" className="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:border-orange-400 outline-none bg-slate-50" value={formData.salesPerson} onChange={e => setFormData({...formData, salesPerson: e.target.value})} />
+                       <select 
+                          value={formData.salesPerson} 
+                          onChange={e => setFormData({...formData, salesPerson: e.target.value})} 
+                          className="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:border-orange-400 outline-none bg-slate-50"
+                       >
+                          <option value="">Select Sales Person</option>
+                          {initialUsers.map(user => (
+                             <option key={user.id} value={user.name}>{user.name}</option>
+                          ))}
+                       </select>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                            <label className="block text-xs font-semibold text-slate-500 mb-1">Assign User</label>
-                           <input type="text" placeholder="Search User" className="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:border-orange-400 outline-none bg-slate-50" value={formData.assignUser} onChange={e => setFormData({...formData, assignUser: e.target.value})} />
+                           <select 
+                              value={formData.assignUser} 
+                              onChange={e => setFormData({...formData, assignUser: e.target.value})} 
+                              className="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:border-orange-400 outline-none bg-slate-50"
+                           >
+                              <option value="">Select User</option>
+                              {initialUsers.map(user => (
+                                 <option key={user.id} value={user.name}>{user.name}</option>
+                              ))}
+                           </select>
                         </div>
                         <div>
                            <label className="block text-xs font-semibold text-slate-500 mb-1">Marketing Person</label>

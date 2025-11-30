@@ -385,6 +385,7 @@ export interface Agent {
   tourType?: string;
   accountingCode?: string;
   localAgent?: boolean;
+  contactPerson?: string;
 }
 
 export interface Supplier {
